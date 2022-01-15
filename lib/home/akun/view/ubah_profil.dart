@@ -1,46 +1,50 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:posyandu/auth/view/login.dart';
 import 'package:posyandu/home/dashboard.dart';
 import 'package:posyandu/style/Custom.dart';
 
-class Export extends StatefulWidget {
-  const Export({Key? key}) : super(key: key);
+class UbahProfil extends StatefulWidget {
+  const UbahProfil({Key? key}) : super(key: key);
 
   @override
-  _ExportState createState() => _ExportState();
+  _UbahProfilState createState() => _UbahProfilState();
 }
 
-class _ExportState extends State<Export> {
-  List kotaDomisili = ["Bayi dan Balita", "Ibu Hamil", "Lansia"];
-  String selectedKotaDomisili = 'Bayi dan Balita';
+class _UbahProfilState extends State<UbahProfil> {
+  List kotaDomisili = ["Kota Malang"];
+  String selectedKotaDomisili = 'Kota Malang';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Ubah Profil",
+          style: TextStyle(
+              fontSize: 24, color: Colors.black87, fontWeight: FontWeight.w700),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_rounded),
+            color: Color(0xff199EE6),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height * 0.9,
+          height: MediaQuery.of(context).size.height * 0.88,
           alignment: Alignment.center,
           margin: EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 50,
-              ),
               Text(
-                "Export Data",
-                style: TextStyle(
-                    fontSize: 32,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w700),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                "Pilih jenis data dan bulan atau tahun ",
+                "Perbarui profil sesuai dengan data diri",
                 style: TextStyle(
                     fontFamily: 'Rubik',
                     fontSize: 16,
@@ -54,51 +58,28 @@ class _ExportState extends State<Export> {
                 margin: EdgeInsets.only(bottom: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Pilih Jenis Data",
+                  "Nama Lengkap",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
                       fontWeight: FontWeight.w700),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 16),
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: DropdownButton(
-                    underline: SizedBox(),
-                    isExpanded: true,
-                    items: this
-                        .kotaDomisili
-                        .map((item) => DropdownMenuItem<String>(
-                              value: item,
-                              child: Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 8, right: 8),
-                                  child: Text(
-                                    item,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontFamily: 'Poppins',
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w600),
-                                  )),
-                            ))
-                        .toList(),
-                    value: selectedKotaDomisili,
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedKotaDomisili = value.toString();
-                          // aktifSimpan = true;
-                        });
-                        print(selectedKotaDomisili);
-                      }
-                    }),
+              TextFormField(
+                // controller: username,
+                keyboardType: TextInputType.text,
+                decoration: customTextField("Perbarui nama lengkap"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 40,
+                // validator: validateName,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,7 +91,7 @@ class _ExportState extends State<Export> {
                         margin: EdgeInsets.only(bottom: 16),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Data Awal",
+                          "Tempat Lahir",
                           style: TextStyle(
                               fontSize: 16,
                               color: Colors.black87,
@@ -118,39 +99,43 @@ class _ExportState extends State<Export> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        child: TextFormField(
-                          readOnly: true,
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                              suffixIcon: Icon(
-                                Icons.arrow_drop_down_outlined,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(16))),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey, width: 2),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16))),
-                              contentPadding: EdgeInsets.only(left: 20),
-                              hintText: "12/12/2021",
-                              hintStyle: TextStyle(
-                                  color: Colors.black45,
-                                  fontSize: 14,
-                                  fontFamily: 'Poppins'),
-                              filled: true,
-                              fillColor: Colors.white),
-                          style: TextStyle(
-                              color: Color(0xff3fa9a0),
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400),
-                          // maxLength: 40,
-                          // validator: validateName,
-                        ),
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(16))),
+                        child: DropdownButton(
+                            underline: SizedBox(),
+                            isExpanded: true,
+                            items: this
+                                .kotaDomisili
+                                .map((item) => DropdownMenuItem<String>(
+                                      value: item,
+                                      child: Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 8, right: 8),
+                                          child: Text(
+                                            item,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: 'Poppins',
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.w600),
+                                          )),
+                                    ))
+                                .toList(),
+                            value: selectedKotaDomisili,
+                            onChanged: (value) {
+                              if (value != null) {
+                                setState(() {
+                                  selectedKotaDomisili = value.toString();
+                                  // aktifSimpan = true;
+                                });
+                                print(selectedKotaDomisili);
+                              }
+                            }),
                       ),
                     ],
                   ),
@@ -161,7 +146,7 @@ class _ExportState extends State<Export> {
                         margin: EdgeInsets.only(bottom: 16),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Data Akhir",
+                          "Tanggal Lahir",
                           style: TextStyle(
                               fontSize: 16,
                               color: Colors.black87,
@@ -169,7 +154,7 @@ class _ExportState extends State<Export> {
                         ),
                       ),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.45,
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: TextFormField(
                           readOnly: true,
                           keyboardType: TextInputType.text,
@@ -187,7 +172,7 @@ class _ExportState extends State<Export> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(16))),
                               contentPadding: EdgeInsets.only(left: 20),
-                              hintText: "12/12/2021",
+                              hintText: "12/05/1995",
                               hintStyle: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 14,
@@ -207,6 +192,33 @@ class _ExportState extends State<Export> {
                   ),
                 ],
               ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Nomor Telepon",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                // controller: username,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Perbarui nomor telepon"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 13,
+                // validator: validateName,
+              ),
               Spacer(),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 16),
@@ -223,7 +235,7 @@ class _ExportState extends State<Export> {
                         MaterialPageRoute(builder: (context) => Dashboard()));
                   },
                   child: Text(
-                    'Export',
+                    'Perbarui',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Rubik',

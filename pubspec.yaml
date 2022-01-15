@@ -29,6 +29,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  charts_flutter: ^0.12.0
+  syncfusion_flutter_charts: ^19.4.38
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -57,6 +59,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+   - assets/images/
+   - assets/icons/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
