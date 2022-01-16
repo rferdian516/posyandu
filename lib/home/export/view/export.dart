@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:posyandu/home/dashboard.dart';
 import 'package:posyandu/style/Custom.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:date_time_format/src/date_time_extension_methods.dart';
 
 class Export extends StatefulWidget {
   const Export({Key? key}) : super(key: key);
@@ -13,7 +17,59 @@ class Export extends StatefulWidget {
 
 class _ExportState extends State<Export> {
   List kotaDomisili = ["Bayi dan Balita", "Ibu Hamil", "Lansia"];
-  String selectedKotaDomisili = 'Bayi dan Balita';
+  String selectedKotaDomisili = "Bayi dan Balita";
+  String chooseExport = "Bayi dan Balita";
+  String dateSelected = '';
+  String monthSelected = '';
+  String yearSelected = '';
+  String nowDateSelected = '';
+  String nowMonthSelected = '';
+  DateTime _fromDate = DateTime.now();
+  final dateFormat = new DateFormat('dd MMMM yyyy');
+  String choseDate = '';
+  TextEditingController dataAwalController = TextEditingController();
+  TextEditingController dataAkhirController = TextEditingController();
+
+  void _downloadPdf(String idExport) async {
+    String url = "https://rumahrahileducation.com/api/posyandu?id=$idExport";
+    if (!await launch(url)) throw 'Could not open $url';
+    print("https://rumahrahileducation.com/api/posyandu?id=$idExport");
+  }
+
+  void getDateFromDialog(String data) async {
+    // final prefs = await _prefs;
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2030))
+        .then((value) {
+      if (value != null) {
+        DateTime _fromDate = DateTime.now();
+        final dateFormat = new DateFormat('dd MMMM yyyy');
+        final monthFormat = new DateFormat('MMMM yyyy');
+        _fromDate = value;
+        final String date = _fromDate.format("Y-m-d");
+
+        final String month = monthFormat.format(_fromDate);
+
+        // String date = _fromDate.format("Y-m-d");
+        setState(() {
+          dateSelected = dateFormat.format(DateTime.parse(date));
+          monthSelected = month;
+          choseDate = date;
+          if (data == "awal") {
+            dataAwalController.text = dateSelected;
+          } else {
+            dataAkhirController.text = dateSelected;
+          }
+          // getListDaily(date);
+        });
+        print("tanggal yg dipilih = " + dateSelected);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +151,7 @@ class _ExportState extends State<Export> {
                         setState(() {
                           selectedKotaDomisili = value.toString();
                           // aktifSimpan = true;
+                          chooseExport = value.toString();
                         });
                         print(selectedKotaDomisili);
                       }
@@ -119,7 +176,15 @@ class _ExportState extends State<Export> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.45,
+                        // height: 30,
+                        // color: Colors.redAccent,
                         child: TextFormField(
+                          onTap: () {
+                            setState(() {
+                              getDateFromDialog("awal");
+                            });
+                          },
+                          controller: dataAwalController,
                           readOnly: true,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
@@ -136,7 +201,7 @@ class _ExportState extends State<Export> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(16))),
                               contentPadding: EdgeInsets.only(left: 20),
-                              hintText: "12/12/2021",
+                              hintText: "1 Januari 2022",
                               hintStyle: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 14,
@@ -170,7 +235,15 @@ class _ExportState extends State<Export> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.45,
+                        // height: 30,
+                        // color: Colors.redAccent,
                         child: TextFormField(
+                          onTap: () {
+                            setState(() {
+                              getDateFromDialog("akhir");
+                            });
+                          },
+                          controller: dataAkhirController,
                           readOnly: true,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
@@ -187,7 +260,7 @@ class _ExportState extends State<Export> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(16))),
                               contentPadding: EdgeInsets.only(left: 20),
-                              hintText: "12/12/2021",
+                              hintText: "31 Januari 2022",
                               hintStyle: TextStyle(
                                   color: Colors.black45,
                                   fontSize: 14,
@@ -219,8 +292,46 @@ class _ExportState extends State<Export> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Dashboard()));
+                    if (chooseExport == "Bayi dan Balita") {
+                      _downloadPdf("1");
+                      setState(() {
+                        Fluttertoast.showToast(
+                            msg: "Simpan laporan Bayi dan Balita",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.blueAccent,
+                            textColor: Colors.white,
+                            fontSize: 16);
+                      });
+                    } else if (chooseExport == "Ibu Hamil") {
+                      _downloadPdf("2");
+                      setState(() {
+                        Fluttertoast.showToast(
+                            msg: "Simpan laporan Ibu Hamil",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.blueAccent,
+                            textColor: Colors.white,
+                            fontSize: 16);
+                      });
+                    } else if (chooseExport == "Lansia") {
+                      _downloadPdf("2");
+                      setState(() {
+                        Fluttertoast.showToast(
+                            msg: "Simpan laporan Lansia",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.blueAccent,
+                            textColor: Colors.white,
+                            fontSize: 16);
+                      });
+                    }
+                    // _downloadPdf();
+                    // Navigator.of(context).push(
+                    //     MaterialPageRoute(builder: (context) => Dashboard()));
                   },
                   child: Text(
                     'Export',
