@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posyandu/style/Custom.dart';
 
 class UpdateBalita extends StatefulWidget {
@@ -283,11 +284,18 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Dashboard()));
+                    Navigator.pop(context);
+                    Fluttertoast.showToast(
+                        msg: "Data berhasil diperbarui",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.greenAccent,
+                        textColor: Colors.white,
+                        fontSize: 16);
                   },
                   child: Text(
-                    'Tambah',
+                    'Perbarui',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Rubik',

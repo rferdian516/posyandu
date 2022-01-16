@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posyandu/style/Custom.dart';
 
 class InputBalita extends StatefulWidget {
@@ -283,8 +284,15 @@ class _InputBalitaState extends State<InputBalita> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Dashboard()));
+                    Navigator.pop(context);
+                    Fluttertoast.showToast(
+                        msg: "Data berhasil disimpan",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: Colors.greenAccent,
+                        textColor: Colors.white,
+                        fontSize: 16);
                   },
                   child: Text(
                     'Tambah',

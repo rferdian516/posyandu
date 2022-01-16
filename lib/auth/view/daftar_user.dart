@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:posyandu/auth/view/login.dart';
 import 'package:posyandu/home/dashboard.dart';
@@ -46,7 +48,7 @@ class _DaftarUserState extends State<DaftarUser> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Daftar Posyandu",
+                "Daftar Pengguna",
                 style: TextStyle(
                     fontSize: 32,
                     color: Colors.black87,
@@ -65,6 +67,88 @@ class _DaftarUserState extends State<DaftarUser> {
               ),
               Container(
                 margin: EdgeInsets.only(top: 32, bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Nama Lengkap",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                // controller: username,
+                keyboardType: TextInputType.text,
+                decoration: customTextField("Masukan nama lengkap"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 40,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "No Hp",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                // controller: username,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan nomorhp"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 13,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Password",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                // controller: username,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: customTextField("Masukan password"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 8,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Provinsi",
