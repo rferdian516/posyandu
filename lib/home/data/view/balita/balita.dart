@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:posyandu/home/data/model/data_balita.dart';
+import 'package:posyandu/home/data/services/get_list_data_balita.dart';
 import 'package:posyandu/home/data/view/balita/detail_balita.dart';
 import 'package:posyandu/home/data/view/balita/input_balita.dart';
 
@@ -12,6 +15,42 @@ class Balita extends StatefulWidget {
 }
 
 class _BalitaState extends State<Balita> {
+  List<DataBalita> _listbalita = [];
+
+  getListData() async {
+    try {
+      var response = await getListBalita();
+      print(response);
+      if (response["error"] == false) {
+        setState(() {
+          var data = response["data"] as List;
+
+          _listbalita =
+              data.map((e) => DataBalita.fromMap(e)).toList().reversed.toList();
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        Fluttertoast.showToast(
+            msg: 'Periksa jaringan internet anda',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getListData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,32 +131,25 @@ class _BalitaState extends State<Balita> {
                   ),
                 ),
                 Container(
-                  // color: Colors.redAccent,
-                  margin: EdgeInsets.only(top: 10),
-                  height: MediaQuery.of(context).size.height * 0.65,
-                  child: ListView(
-                    children: [
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Felyn Widyaningrum", "26")),
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Dewi Nur Azizah", "35")),
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Sinta Nanda Novita", "24")),
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Siti Marsuah", "36")),
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Sri Sulastri", "38")),
-                      Container(
-                          margin: EdgeInsets.only(top: 16),
-                          child: _buildList("Indah Safitri", "28"))
-                    ],
-                  ),
-                ),
+                    // color: Colors.redAccent,
+                    margin: EdgeInsets.only(top: 10),
+                    height: MediaQuery.of(context).size.height * 0.65,
+                    child: _listbalita.isEmpty
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            // physics: NeverScrollableScrollPhysics(),
+                            itemCount:
+                                _listbalita.isEmpty ? 0 : _listbalita.length,
+                            itemBuilder: (context, i) {
+                              return Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  child: _buildList(
+                                      _listbalita[i].name.toString(),
+                                      _listbalita[i].gender.toString()));
+                            })),
               ],
             ),
           ),
@@ -128,8 +160,10 @@ class _BalitaState extends State<Balita> {
 
   Widget _buildList(String name, age) => InkWell(
         onTap: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => DetailBalita()));
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => DetailBalita(
+                    name: name,
+                  )));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 24),
@@ -159,7 +193,7 @@ class _BalitaState extends State<Balita> {
                     SizedBox(
                       height: 8,
                     ),
-                    Text("$age bulan",
+                    Text(age == "L" ? "Laki-laki" : "Perempuan",
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black54,

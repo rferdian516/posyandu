@@ -1,20 +1,78 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:posyandu/home/data/model/data_balita.dart';
+import 'package:posyandu/home/data/services/get_detail_balita.dart';
 import 'package:posyandu/home/data/view/balita/input_kesehatan_balita.dart';
 import 'package:posyandu/home/data/view/balita/update_balita.dart';
 import 'package:posyandu/home/data/view/balita/update_kesehatan_balita.dart';
 
 class DetailBalita extends StatefulWidget {
-  const DetailBalita({Key? key}) : super(key: key);
+  final String name;
+  const DetailBalita({Key? key, required this.name}) : super(key: key);
 
   @override
   _DetailBalitaState createState() => _DetailBalitaState();
 }
 
 class _DetailBalitaState extends State<DetailBalita> {
+  DataBalita dataBalita = DataBalita();
+  String selectedBln = 'Januari';
+
+  List bln = [
+    "Januari",
+    "Februari",
+    "Maret",
+    "April",
+    "Mei",
+    "Juni",
+    "Juli",
+    "Agustus",
+    "September",
+    "Oktober",
+    "November",
+    "Desember"
+  ];
+
+  getDetailData() async {
+    try {
+      var response = await getDetailBalita(widget.name);
+      print(response);
+      if (response["error"] == false) {
+        setState(() {
+          var data = response["data"];
+
+          dataBalita = DataBalita.fromMap(data);
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        Fluttertoast.showToast(
+            msg: 'Periksa jaringan internet anda',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDetailData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('id_ID', null);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -41,105 +99,119 @@ class _DetailBalitaState extends State<DetailBalita> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.all(16),
-                // height: 280,
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: Color(0xffD6EEFA),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(12),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text("Informasi Umum",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500)),
-                    SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Nama Lengkap",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
+              dataBalita.birthdate.toString() == "null"
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(
+                      padding: EdgeInsets.all(16),
+                      // height: 280,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Color(0xffD6EEFA),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
                         ),
-                        Text(
-                          "Dewi Ratnasari",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text("Informasi Umum",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w500)),
+                          SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Nama Lengkap",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataBalita.name.toString(),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "TTL",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                DateFormat.d().format(DateTime.parse(
+                                        dataBalita.birthdate.toString())) +
+                                    " " +
+                                    DateFormat.MMMM('id_ID').format(
+                                        DateTime.parse(
+                                            dataBalita.birthdate.toString())) +
+                                    " " +
+                                    DateFormat.y().format(DateTime.parse(
+                                        dataBalita.birthdate.toString())),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Jenis Kelamin",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataBalita.gender.toString() == "L"
+                                    ? "Laki-laki"
+                                    : "Perempuan",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Nama Orang Tua",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataBalita.motherName.toString(),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "TTL",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "Probolinggo, 12 Desember 2021",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Jenis Kelamin",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "Perempuan",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Nama Orang Tua",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "Felyn Widyaningrum",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              ),
               SizedBox(height: 16),
               Container(
                 alignment: Alignment.centerLeft,
@@ -154,34 +226,41 @@ class _DetailBalitaState extends State<DetailBalita> {
               SizedBox(height: 10),
               Container(
                 width: MediaQuery.of(context).size.width,
-                child: TextFormField(
-                  readOnly: true,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                      suffixIcon: Icon(Icons.calendar_today_rounded),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16))),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 2),
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      contentPadding: EdgeInsets.only(left: 20),
-                      hintText: "Pilih bulan",
-                      hintStyle: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 14,
-                          fontFamily: 'Poppins'),
-                      filled: true,
-                      fillColor: Colors.white),
-                  style: TextStyle(
-                      color: Color(0xff3fa9a0),
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400),
-                  // maxLength: 40,
-                  // validator: validateName,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: DropdownButton(
+                    underline: SizedBox(),
+                    isExpanded: true,
+                    items: this
+                        .bln
+                        .map((item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'Poppins',
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                            ))
+                        .toList(),
+                    value: selectedBln,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedBln = value.toString();
+                          // aktifSimpan = true;
+                        });
+                        print(selectedBln);
+                      }
+                    }),
               ),
               Container(
                 margin: EdgeInsets.only(top: 16),
@@ -201,7 +280,7 @@ class _DetailBalitaState extends State<DetailBalita> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "September",
+                          "Januari",
                           style: TextStyle(
                               fontSize: 20,
                               color: Colors.black87,
@@ -242,7 +321,7 @@ class _DetailBalitaState extends State<DetailBalita> {
                               TextStyle(fontSize: 14, color: Color(0xff696969)),
                         ),
                         Text(
-                          "2.8 Kg",
+                          "17 Kg",
                           style:
                               TextStyle(fontSize: 14, color: Color(0xff696969)),
                         )
@@ -260,7 +339,7 @@ class _DetailBalitaState extends State<DetailBalita> {
                               TextStyle(fontSize: 14, color: Color(0xff696969)),
                         ),
                         Text(
-                          "50 cm",
+                          "100 cm",
                           style:
                               TextStyle(fontSize: 14, color: Color(0xff696969)),
                         )
@@ -325,7 +404,9 @@ class _DetailBalitaState extends State<DetailBalita> {
                   ))),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdateBalita()));
+                        builder: (context) => UpdateBalita(
+                              name: widget.name,
+                            )));
                   },
                   child: Text(
                     'Perbarui Informasi Umum',

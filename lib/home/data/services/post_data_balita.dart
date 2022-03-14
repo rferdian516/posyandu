@@ -2,14 +2,19 @@ import 'package:http/http.dart' as http;
 import 'package:posyandu/baseurl/baseurl.dart';
 import 'dart:convert';
 
-Future loginUser(String phoneNumber, String password) async {
+Future insertBalita(String name, String birthdate, String weight, String height,
+    String parent, String gender) async {
   String myUrl = MyUrl().getUrlDevice();
-  String url = "$myUrl/login";
+  String url = "$myUrl/balita/insert";
   final response = await http.post(Uri.parse(url), headers: {
     "Accept": "Application/json"
   }, body: {
-    'phone_number': phoneNumber,
-    'password': password,
+    'name': name,
+    'birthdate': birthdate,
+    'weight': weight,
+    'height': height,
+    'parent': parent,
+    'gender': gender
   });
 
   if (response.body.isNotEmpty) {

@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:date_time_format/src/date_time_extension_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+import 'package:posyandu/home/data/services/post_data_balita.dart';
+import 'package:posyandu/home/data/view/balita/balita.dart';
 import 'package:posyandu/style/Custom.dart';
 
 class InputBalita extends StatefulWidget {
@@ -25,8 +30,119 @@ class _InputBalitaState extends State<InputBalita> {
   String selectedjenisKelamin = 'Laki-Laki';
   String selectedKotaDomisili = 'Kota Malang';
   String selectedKecDomisili = 'Blimbing';
+  String dateSelected = '';
+  String monthSelected = '';
+  String yearSelected = '';
+  String nowDateSelected = '';
+  String nowMonthSelected = '';
+
+  String inputJK = '';
+
+  DateTime _fromDate = DateTime.now();
+  final dateFormat = new DateFormat('dd MMMM yyyy');
+  String choseDate = '';
+  TextEditingController _namaController = TextEditingController();
+  TextEditingController _tglLahirController = TextEditingController();
+  TextEditingController _anakKeController = TextEditingController();
+  TextEditingController _ibuKandungController = TextEditingController();
+
+  void getDateFromDialog() async {
+    // final prefs = await _prefs;
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2030))
+        .then((value) {
+      if (value != null) {
+        DateTime _fromDate = DateTime.now();
+        final dateFormat = new DateFormat('dd MMMM yyyy');
+        final monthFormat = new DateFormat('MMMM yyyy');
+        _fromDate = value;
+        final String date = _fromDate.format("Y-m-d");
+
+        final String month = monthFormat.format(_fromDate);
+
+        // String date = _fromDate.format("Y-m-d");
+        setState(() {
+          dateSelected = dateFormat.format(DateTime.parse(date));
+
+          monthSelected = month;
+          choseDate = date;
+          _tglLahirController.text =
+              DateFormat.d().format(DateTime.parse(date)) +
+                  " " +
+                  DateFormat.MMMM('id_ID').format(DateTime.parse(date)) +
+                  " " +
+                  DateFormat.y().format(DateTime.parse(date));
+        });
+        print("tanggal yg dipilih = " + choseDate);
+      }
+    });
+  }
+
+  inputDataBalita() async {
+    var nama = _namaController.text;
+    var anakKe = _anakKeController.text;
+    var ibuKandung = _ibuKandungController.text;
+
+    if (nama == "" && anakKe == "" && ibuKandung == "") {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: 'Pastikan semua form sudah terisi',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    } else {
+      try {
+        var response =
+            await insertBalita(nama, choseDate, "5", "68", ibuKandung, inputJK);
+        print(response);
+        if (response['error'] == false) {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => Balita()));
+          Fluttertoast.showToast(
+              msg: 'Data berhasil ditambahkan',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.blueAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        } else {
+          setState(() {
+            Fluttertoast.showToast(
+                msg: 'Terjadi kesalahan',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 2,
+                backgroundColor: Colors.orangeAccent,
+                textColor: Colors.white,
+                fontSize: 16);
+          });
+        }
+      } catch (e) {
+        setState(() {
+          Fluttertoast.showToast(
+              msg: 'Periksa jaringan internet anda',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.orangeAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting('id_ID', null);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -64,7 +180,7 @@ class _InputBalitaState extends State<InputBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: _namaController,
                 keyboardType: TextInputType.text,
                 decoration: customTextField("Masukan nama balita"),
                 // onChanged: (value) async {
@@ -122,9 +238,14 @@ class _InputBalitaState extends State<InputBalita> {
                       if (value != null) {
                         setState(() {
                           selectedjenisKelamin = value.toString();
-                          // aktifSimpan = true;
+                          if (value.toString() == "Laki-Laki") {
+                            inputJK = "L";
+                          } else {
+                            inputJK = "P";
+                          }
                         });
-                        print(selectedjenisKelamin);
+                        // print(inputJK);
+                        // print(selectedjenisKelamin);
                       }
                     }),
               ),
@@ -181,7 +302,7 @@ class _InputBalitaState extends State<InputBalita> {
                 margin: EdgeInsets.symmetric(vertical: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Tangggal Lahir",
+                  "Tanggal Lahir",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -191,6 +312,8 @@ class _InputBalitaState extends State<InputBalita> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 child: TextFormField(
+                  onTap: () => getDateFromDialog(),
+                  controller: _tglLahirController,
                   readOnly: true,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
@@ -231,7 +354,7 @@ class _InputBalitaState extends State<InputBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: _anakKeController,
                 keyboardType: TextInputType.number,
                 decoration: customTextField("Masukan urutan anak  "),
                 // onChanged: (value) async {
@@ -258,7 +381,7 @@ class _InputBalitaState extends State<InputBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: _ibuKandungController,
                 keyboardType: TextInputType.text,
                 decoration: customTextField("Masukan nama ibu kandung"),
                 // onChanged: (value) async {
@@ -284,7 +407,8 @@ class _InputBalitaState extends State<InputBalita> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    Navigator.pop(context);
+                    inputDataBalita();
+                    // Navigator.pop(context);
                     Fluttertoast.showToast(
                         msg: "Data berhasil disimpan",
                         toastLength: Toast.LENGTH_SHORT,

@@ -1,7 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:posyandu/auth/services/api_login.dart';
 import 'package:posyandu/auth/view/daftar_user.dart';
 import 'package:posyandu/home/dashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -11,6 +16,74 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  postLogin() async {
+    final SharedPreferences prefs = await _prefs;
+    // prefs.setString("username", _phoneController.text);
+    // prefs.setString("password", _passwordController.text);
+
+    var phone = _phoneController.text;
+    var pass = _passwordController.text;
+
+    if (phone == "" && pass == "") {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: 'No Hp & password tidak boleh kosong',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    } else {
+      try {
+        var rspLogin = await loginUser(phone, pass);
+        print(rspLogin);
+        if (rspLogin['error'] == false) {
+          prefs.setString("username", rspLogin['data']['name']);
+          prefs.setString("nohp", rspLogin['data']['phone_number']);
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => Dashboard()));
+          // print(prefs.getString("username"));
+          Fluttertoast.showToast(
+              msg: 'Login sukses',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.blueAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        } else {
+          setState(() {
+            Fluttertoast.showToast(
+                msg: 'No hp atau password salah',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 2,
+                backgroundColor: Colors.orangeAccent,
+                textColor: Colors.white,
+                fontSize: 16);
+          });
+        }
+      } catch (e) {
+        setState(() {
+          Fluttertoast.showToast(
+              msg: 'Periksa jaringan internet anda',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.orangeAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // bool isLogInEnabled =
@@ -57,31 +130,17 @@ class _LoginState extends State<Login> {
                 height: 36,
               ),
               TextFormField(
-                // controller: _emailController,
+                controller: _phoneController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  labelText: 'Nomor Telepon',
+                  labelText: 'Nomor Handphone',
                   suffixStyle: TextStyle(color: Colors.green),
                   // errorText:
                   //     _isEmailError ? "Format email tidak benar" : null,
                 ),
-                textInputAction: TextInputAction.next,
-                inputFormatters: [LengthLimitingTextInputFormatter(40)],
-                onFieldSubmitted: (value) {
-                  setState(() {
-                    // _isEmailError =
-                    //     !(value.isNotEmpty && value.contains("@"));
-                  });
-                },
-                onChanged: (value) {
-                  setState(() {
-                    // _isEmailError =
-                    //     !(value.isNotEmpty && value.contains("@"));
-                  });
-                },
               ),
               SizedBox(
                 height: 22,
@@ -97,7 +156,7 @@ class _LoginState extends State<Login> {
                   });
                 },
                 child: TextFormField(
-                  // controller: _passwordController,
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -178,8 +237,7 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Dashboard()));
+                    postLogin();
                   },
                   child: Text(
                     'Login',

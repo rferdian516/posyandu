@@ -317,7 +317,7 @@ class _ExportState extends State<Export> {
                             fontSize: 16);
                       });
                     } else if (chooseExport == "Lansia") {
-                      _downloadPdf("2");
+                      _downloadPdf("3");
                       setState(() {
                         Fluttertoast.showToast(
                             msg: "Simpan laporan Lansia",

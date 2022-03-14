@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:posyandu/auth/view/daftar_user.dart';
 import 'package:posyandu/auth/view/login.dart';
+import 'package:posyandu/home/dashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BoardingPage extends StatefulWidget {
   @override
@@ -8,6 +10,27 @@ class BoardingPage extends StatefulWidget {
 }
 
 class _BoardingPageState extends State<BoardingPage> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  String name = '';
+  checkUser() async {
+    final SharedPreferences prefs = await _prefs;
+    setState(() {
+      name = prefs.getString("username").toString();
+    });
+
+    if (name != "") {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => Dashboard()));
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
