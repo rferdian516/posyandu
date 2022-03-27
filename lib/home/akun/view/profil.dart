@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:posyandu/auth/view/boarding_page.dart';
 import 'package:posyandu/home/akun/model/m_user.dart';
 import 'package:posyandu/home/akun/services/get_profile.dart';
 import 'package:posyandu/home/akun/view/ubah_password.dart';
@@ -44,6 +45,14 @@ class _ProfilState extends State<Profil> {
             fontSize: 16);
       });
     }
+  }
+
+  void logout() async {
+    final SharedPreferences prefs = await _prefs;
+    prefs.clear();
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => BoardingPage()));
   }
 
   @override
@@ -338,11 +347,10 @@ class _ProfilState extends State<Profil> {
                         borderRadius: BorderRadius.circular(12),
                       ))),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => UbahProfil()));
+                        logout();
                       },
                       child: Text(
-                        'Perbarui',
+                        'Logout',
                         style: TextStyle(
                             color: Colors.white,
                             fontFamily: 'Rubik',
