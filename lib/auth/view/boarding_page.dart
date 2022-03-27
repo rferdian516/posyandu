@@ -18,7 +18,7 @@ class _BoardingPageState extends State<BoardingPage> {
       name = prefs.getString("username").toString();
     });
 
-    if (name != "") {
+    if (name != "null") {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Dashboard()));
     }
