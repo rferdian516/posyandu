@@ -2,10 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:posyandu/home/data/model/data_balita.dart';
+import 'package:posyandu/home/data/model/balita/balita_model.dart';
 import 'package:posyandu/home/data/services/get_list_data_balita.dart';
 import 'package:posyandu/home/data/view/balita/detail_balita.dart';
 import 'package:posyandu/home/data/view/balita/input_balita.dart';
+import 'package:posyandu/utils/apiservices.dart';
 
 class Balita extends StatefulWidget {
   const Balita({Key? key}) : super(key: key);
@@ -15,33 +16,59 @@ class Balita extends StatefulWidget {
 }
 
 class _BalitaState extends State<Balita> {
-  List<DataBalita> _listbalita = [];
+  List<BalitaModel> _listbalita = [];
+
+  // getListData() async {
+  //   try {
+  //     var response = await getListBalita();
+  //     print(response);
+  //     if (response["error"] == false) {
+  //       setState(() {
+  //         var data = response["data"] as List;
+
+  //         _listbalita =
+  //             data.map((e) => BalitaModel.fromMap(e)).toList().reversed.toList();
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     setState(() {
+  //       Fluttertoast.showToast(
+  //           msg: 'Periksa jaringan internet anda',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 2,
+  //           backgroundColor: Colors.orangeAccent,
+  //           textColor: Colors.white,
+  //           fontSize: 16);
+  //     });
+  //   }
+  // }
 
   getListData() async {
-    try {
-      var response = await getListBalita();
-      print(response);
-      if (response["error"] == false) {
+    ApiServices.get("babies").then((value) {
+      try {
+        print("response list_bayi -> $value");
         setState(() {
-          var data = response["data"] as List;
-
-          _listbalita =
-              data.map((e) => DataBalita.fromMap(e)).toList().reversed.toList();
+          var data = value["data"] as List;
+          debugPrint("hasil data -> $data");
+          _listbalita = data
+              .map((e) => BalitaModel.fromMap(e))
+              .toList()
+              .reversed
+              .toList();
         });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
+      } catch (e) {
         Fluttertoast.showToast(
-            msg: 'Periksa jaringan internet anda',
+            msg: 'Gagal memuat data',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 2,
             backgroundColor: Colors.orangeAccent,
             textColor: Colors.white,
             fontSize: 16);
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -148,7 +175,8 @@ class _BalitaState extends State<Balita> {
                                   margin: EdgeInsets.only(top: 16),
                                   child: _buildList(
                                       _listbalita[i].name.toString(),
-                                      _listbalita[i].gender.toString()));
+                                      _listbalita[i].gender.toString(),
+                                      _listbalita[i].id.toString()));
                             })),
               ],
             ),
@@ -158,11 +186,12 @@ class _BalitaState extends State<Balita> {
     );
   }
 
-  Widget _buildList(String name, age) => InkWell(
+  Widget _buildList(String name, age, id) => InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => DetailBalita(
                     name: name,
+                    id: id,
                   )));
         },
         child: Container(
@@ -193,7 +222,7 @@ class _BalitaState extends State<Balita> {
                     SizedBox(
                       height: 8,
                     ),
-                    Text(age == "L" ? "Laki-laki" : "Perempuan",
+                    Text(age,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.black54,

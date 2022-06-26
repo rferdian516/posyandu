@@ -70,6 +70,7 @@ class _LoginState extends State<Login> {
           });
         }
       } catch (e) {
+        print(e);
         setState(() {
           Fluttertoast.showToast(
               msg: 'Periksa jaringan internet anda',
@@ -86,9 +87,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    // bool isLogInEnabled =
-    //     !_isEmailError && !_isPasswordError && _initialEnabledButton;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

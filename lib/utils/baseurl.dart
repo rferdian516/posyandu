@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class MyUrl {
-  // String _url = "http://192.168.0.113:88/api";
-  String _url = "http://posyandu-itn.herokuapp.com/api";
+  final String _url = "http://192.168.99.212:8888/api";
+  // final String _url = "http://posyandu-itn.herokuapp.com/api";
   String getUrlDevice() {
-    return this._url;
+    return _url;
   }
 
   postData(data, apiUrl) async {

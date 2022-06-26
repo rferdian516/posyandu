@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:posyandu/home/akun/view/ubah_password.dart';
 import 'package:posyandu/home/data/view/balita/balita.dart';
 
+import 'ibuhamil/ibuhamil.dart';
+import 'lansia/lansia.dart';
+
 class Data extends StatefulWidget {
   const Data({Key? key}) : super(key: key);
 
@@ -15,6 +18,16 @@ class _DataState extends State<Data> {
   intentDataBalita() {
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => Balita()));
+  }
+
+  intentIbuHamil() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => IbuHamil()));
+  }
+
+  intentDataLansia() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => Lansia()));
   }
 
   @override
@@ -92,7 +105,7 @@ class _DataState extends State<Data> {
             ),
             InkWell(
               onTap: () {
-                intentDataBalita();
+                intentIbuHamil();
               },
               child: Container(
                 margin: EdgeInsets.only(bottom: 24),
@@ -123,7 +136,7 @@ class _DataState extends State<Data> {
                         color: Colors.black87,
                       ),
                       onPressed: () {
-                        intentDataBalita();
+                        intentIbuHamil();
                       },
                       // iconSize: 50,
                     )
@@ -133,7 +146,7 @@ class _DataState extends State<Data> {
             ),
             InkWell(
               onTap: () {
-                intentDataBalita();
+                intentDataLansia();
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 24),
@@ -163,7 +176,7 @@ class _DataState extends State<Data> {
                         color: Colors.black87,
                       ),
                       onPressed: () {
-                        intentDataBalita();
+                        intentDataLansia();
                       },
                       // iconSize: 50,
                     )

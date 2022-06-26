@@ -294,49 +294,51 @@ class _ProfilState extends State<Profil> {
                       ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => UbahPassword()));
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 24),
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      alignment: Alignment.center,
-                      height: 50,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Color(0xffD6EEFA),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Ubah Password",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w500)),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.navigate_next_rounded,
-                              color: Colors.black87,
-                            ),
-                            onPressed: () {
-                              // intentPusatBantuan();
-                            },
-                            // iconSize: 50,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
+                  // InkWell(
+                  //   onTap: () {
+                  //     Navigator.of(context).push(MaterialPageRoute(
+                  //         builder: (context) => UbahPassword()));
+                  //   },
+                  //   child: Container(
+                  //     margin: EdgeInsets.symmetric(vertical: 24),
+                  //     padding: EdgeInsets.symmetric(horizontal: 24),
+                  //     alignment: Alignment.center,
+                  //     height: 50,
+                  //     width: MediaQuery.of(context).size.width,
+                  //     decoration: BoxDecoration(
+                  //       color: Color(0xffD6EEFA),
+                  //       borderRadius: BorderRadius.all(
+                  //         Radius.circular(12),
+                  //       ),
+                  //     ),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text("Ubah Password",
+                  //             style: TextStyle(
+                  //                 fontSize: 16,
+                  //                 color: Colors.black87,
+                  //                 fontWeight: FontWeight.w500)),
+                  //         SizedBox(
+                  //           height: 8,
+                  //         ),
+                  //         IconButton(
+                  //           icon: Icon(
+                  //             Icons.navigate_next_rounded,
+                  //             color: Colors.black87,
+                  //           ),
+                  //           onPressed: () {
+                  //             // intentPusatBantuan();
+                  //           },
+                  //           // iconSize: 50,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // Spacer(),
+                  Container(
+                    margin: EdgeInsets.only(top: 24),
                     width: MediaQuery.of(context).size.width,
                     height: 50,
                     child: ElevatedButton(

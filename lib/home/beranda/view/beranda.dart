@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posyandu/home/akun/model/m_user.dart';
 import 'package:posyandu/home/akun/services/get_profile.dart';
-import 'package:posyandu/home/beranda/model/m_chart.dart';
-import 'package:posyandu/home/data/model/data_balita.dart';
 import 'package:posyandu/home/data/services/get_list_data_balita.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+
+import '../../data/model/balita/balita_model.dart';
 
 class Beranda extends StatefulWidget {
   const Beranda({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class _BerandaState extends State<Beranda> {
     });
   }
 
-  List<DataBalita> _listbalita = [];
+  List<BalitaModel> _listbalita = [];
   List<_BalitaData> dataBalita = [];
 
   List<_BalitaData> dataIbuHamil = [
@@ -83,8 +82,11 @@ class _BerandaState extends State<Beranda> {
         setState(() {
           var data = response["data"] as List;
 
-          _listbalita =
-              data.map((e) => DataBalita.fromMap(e)).toList().reversed.toList();
+          _listbalita = data
+              .map((e) => BalitaModel.fromMap(e))
+              .toList()
+              .reversed
+              .toList();
 
           counterBalita = _listbalita.length;
           dataBalita = [

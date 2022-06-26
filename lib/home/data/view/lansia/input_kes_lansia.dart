@@ -2,32 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:posyandu/style/Custom.dart';
-import 'package:posyandu/utils/apiservices.dart';
 
-import '../../model/balita/balita_kesehatan.dart';
+import '../../../../utils/apiservices.dart';
 
-class UpdateKesehatanBalita extends StatefulWidget {
-  final String id;
-  final String babyId;
+class InputKesehatanLansia extends StatefulWidget {
   final String name;
-  final String selectedBulan;
-  const UpdateKesehatanBalita(
-      {Key? key,
-      required this.id,
-      required this.babyId,
-      required this.name,
-      required this.selectedBulan})
+  final String id;
+  const InputKesehatanLansia({Key? key, required this.name, required this.id})
       : super(key: key);
 
   @override
-  _UpdateKesehatanBalitaState createState() => _UpdateKesehatanBalitaState();
+  State<InputKesehatanLansia> createState() => _InputKesehatanLansiaState();
 }
 
-class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
-  BalitaKesehatan dataKesehatan = BalitaKesehatan();
-
+class _InputKesehatanLansiaState extends State<InputKesehatanLansia> {
   TextEditingController namaController = TextEditingController();
   TextEditingController bbController = TextEditingController();
   TextEditingController tbController = TextEditingController();
@@ -63,17 +52,18 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
   String selectedKotaDomisili = 'Kota Malang';
   String selectedKecDomisili = 'Blimbing';
   String selectedBln = 'Januari';
+  String selectedIndex = '0';
 
   inputDataKesehatan() async {
     try {
-      ApiServices.post("monthly-healt-babies/${widget.id}/update", {
-        "baby_id": widget.babyId,
+      ApiServices.post("monthly-healt-elderlies/${widget.id}", {
+        "elderlies_id": widget.id,
         "height": tbController.text,
         "weight": bbController.text,
         "head_circumference": lkController.text,
         "stomach_circumference": lpController.text,
         "month_age": usiaController.text,
-        "month_date": "2022-${widget.selectedBulan}-01"
+        "month_date": "2022-$selectedIndex-01"
       }).then((value) {
         Navigator.pop(context);
         print(value);
@@ -102,35 +92,11 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
     }
   }
 
-  getDataKesehatan(String id, String bln) async {
-    ApiServices.get(
-            "monthly-healt-babies/${widget.babyId}?year=2022&month=${widget.selectedBulan}")
-        .then((value) {
-      try {
-        print("response detail kesehatan -> $value");
-        setState(() {
-          var data = value["data"][0];
-          debugPrint("hasil data -> $data");
-          dataKesehatan = BalitaKesehatan.fromMap(data);
-          bbController.text = dataKesehatan.weight.toString();
-          tbController.text = dataKesehatan.height.toString();
-          lkController.text = dataKesehatan.headCircumference.toString();
-          lpController.text = dataKesehatan.stomachCircumference.toString();
-          usiaController.text = dataKesehatan.monthAge.toString();
-        });
-      } catch (e) {
-        print(e);
-      }
-    });
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     namaController.text = widget.name;
-    getDataKesehatan(widget.babyId, widget.selectedBulan);
-    print("${widget.babyId}, ${widget.selectedBulan}");
   }
 
   @override
@@ -201,40 +167,48 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.all(Radius.circular(16))),
-                child: Text(
-                  bln[int.parse(widget.selectedBulan) - 1],
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w700),
-                ),
-                // DropdownButton(
-                //     underline: SizedBox(),
-                //     isExpanded: true,
-                //     items: this
-                //         .bln
-                //         .map((item) => DropdownMenuItem<String>(
-                //               value: item,
-                //               child: Container(
-                //                   margin:
-                //                       const EdgeInsets.only(left: 8, right: 8),
-                //                   child: Text(
-                //                     item,
-                //                     style: TextStyle(
-                //                         fontSize: 15,
-                //                         fontFamily: 'Poppins',
-                //                         color: Colors.black54,
-                //                         fontWeight: FontWeight.w600),
-                //                   )),
-                //             ))
-                //         .toList(),
-                //     value: selectedBln,
-                //     onChanged: (value) {}),
+                child: DropdownButton(
+                    underline: SizedBox(),
+                    isExpanded: true,
+                    items: this
+                        .bln
+                        .map((item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Container(
+                                  margin:
+                                      const EdgeInsets.only(left: 8, right: 8),
+                                  child: Text(
+                                    item,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontFamily: 'Poppins',
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w600),
+                                  )),
+                            ))
+                        .toList(),
+                    value: selectedBln,
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedBln = value.toString();
+                          selectedIndex = (bln.indexOf(selectedBln) + 1)
+                                      .toString()
+                                      .length ==
+                                  1
+                              ? "0" + (bln.indexOf(selectedBln) + 1).toString()
+                              : (bln.indexOf(selectedBln) + 1).toString();
+                          // aktifSimpan = true;
+                        });
+                        print(selectedBln + "=>" + selectedIndex);
+                        // print(value.);
+                      }
+                    }),
               ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 16),
@@ -348,7 +322,7 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
                 margin: EdgeInsets.only(bottom: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Usia (dalam bulan)",
+                  "Usia ",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -385,7 +359,7 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
                     inputDataKesehatan();
                   },
                   child: Text(
-                    'Perbarui',
+                    'Tambah',
                     style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'Rubik',

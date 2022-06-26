@@ -4,23 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:posyandu/home/data/model/data_balita.dart';
-import 'package:posyandu/home/data/services/get_detail_balita.dart';
+import 'package:posyandu/home/data/model/balita/balita_kesehatan.dart';
 import 'package:posyandu/home/data/view/balita/input_kesehatan_balita.dart';
 import 'package:posyandu/home/data/view/balita/update_balita.dart';
 import 'package:posyandu/home/data/view/balita/update_kesehatan_balita.dart';
 
+import '../../../../utils/apiservices.dart';
+import '../../model/balita/balita_model.dart';
+
 class DetailBalita extends StatefulWidget {
   final String name;
-  const DetailBalita({Key? key, required this.name}) : super(key: key);
+  final String id;
+  const DetailBalita({Key? key, required this.name, required this.id})
+      : super(key: key);
 
   @override
   _DetailBalitaState createState() => _DetailBalitaState();
 }
 
 class _DetailBalitaState extends State<DetailBalita> {
-  DataBalita dataBalita = DataBalita();
+  BalitaModel dataBalita = BalitaModel();
+  BalitaKesehatan dataKesehatan = BalitaKesehatan();
   String selectedBln = 'Januari';
+  String bulanKesehatan = "";
+  bool status = false;
 
   List bln = [
     "Januari",
@@ -37,37 +44,86 @@ class _DetailBalitaState extends State<DetailBalita> {
     "Desember"
   ];
 
-  getDetailData() async {
-    try {
-      var response = await getDetailBalita(widget.name);
-      print(response);
-      if (response["error"] == false) {
-        setState(() {
-          var data = response["data"];
+  // getDetailData() async {
+  //   try {
+  //     var response = await getDetailBalita(widget.name);
+  //     print(response);
+  //     if (response["error"] == false) {
+  //       setState(() {
+  //         var data = response["data"];
 
-          dataBalita = DataBalita.fromMap(data);
+  //         dataBalita = BalitaModel.fromMap(data);
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     setState(() {
+  //       Fluttertoast.showToast(
+  //           msg: 'Periksa jaringan internet anda',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 2,
+  //           backgroundColor: Colors.orangeAccent,
+  //           textColor: Colors.white,
+  //           fontSize: 16);
+  //     });
+  //   }
+  // }
+
+  getDetailData(String id) async {
+    ApiServices.get("babies/$id").then((value) {
+      try {
+        print("response list_bayi -> $value");
+        setState(() {
+          var data = value["data"];
+          debugPrint("hasil data -> $data");
+          dataBalita = BalitaModel.fromMap(data);
         });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
+      } catch (e) {
+        print(e);
         Fluttertoast.showToast(
-            msg: 'Periksa jaringan internet anda',
+            msg: 'Gagal memuat data',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 2,
             backgroundColor: Colors.orangeAccent,
             textColor: Colors.white,
             fontSize: 16);
-      });
-    }
+      }
+    });
+  }
+
+  getDataKesehatan(String id, String bln) async {
+    ApiServices.get("monthly-healt-babies/$id?year=2022&month=$bln")
+        .then((value) {
+      try {
+        print("response list_bayi -> $value");
+        setState(() {
+          var data = value["data"][0];
+          debugPrint("hasil data -> $data");
+          dataKesehatan = BalitaKesehatan.fromMap(data);
+          bulanKesehatan = DateFormat.MMMM('id_ID')
+                  .format(DateTime.parse(dataKesehatan.monthDate.toString())) +
+              " " +
+              DateFormat.y()
+                  .format(DateTime.parse(dataKesehatan.monthDate.toString()));
+          status = true;
+        });
+      } catch (e) {
+        setState(() {
+          status = false;
+        });
+        print(e);
+      }
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDetailData();
+    getDetailData(widget.id);
+    getDataKesehatan(widget.id, "1");
   }
 
   @override
@@ -99,7 +155,7 @@ class _DetailBalitaState extends State<DetailBalita> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              dataBalita.birthdate.toString() == "null"
+              dataBalita.birthDate.toString() == "null"
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
@@ -155,14 +211,14 @@ class _DetailBalitaState extends State<DetailBalita> {
                               ),
                               Text(
                                 DateFormat.d().format(DateTime.parse(
-                                        dataBalita.birthdate.toString())) +
+                                        dataBalita.birthDate.toString())) +
                                     " " +
                                     DateFormat.MMMM('id_ID').format(
                                         DateTime.parse(
-                                            dataBalita.birthdate.toString())) +
+                                            dataBalita.birthDate.toString())) +
                                     " " +
                                     DateFormat.y().format(DateTime.parse(
-                                        dataBalita.birthdate.toString())),
+                                        dataBalita.birthDate.toString())),
                                 style: TextStyle(
                                     fontSize: 14, color: Color(0xff696969)),
                               )
@@ -180,9 +236,7 @@ class _DetailBalitaState extends State<DetailBalita> {
                                     fontSize: 14, color: Color(0xff696969)),
                               ),
                               Text(
-                                dataBalita.gender.toString() == "L"
-                                    ? "Laki-laki"
-                                    : "Perempuan",
+                                dataBalita.gender.toString(),
                                 style: TextStyle(
                                     fontSize: 14, color: Color(0xff696969)),
                               )
@@ -256,6 +310,8 @@ class _DetailBalitaState extends State<DetailBalita> {
                       if (value != null) {
                         setState(() {
                           selectedBln = value.toString();
+                          getDataKesehatan(widget.id,
+                              (bln.indexOf(selectedBln) + 1).toString());
                           // aktifSimpan = true;
                         });
                         print(selectedBln);
@@ -273,98 +329,138 @@ class _DetailBalitaState extends State<DetailBalita> {
                     Radius.circular(12),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Januari",
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => UpdateKesehatanBalita()));
-                          },
-                          child: Text(
-                            "✎ Perbarui",
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontSize: 16,
-                                color: Colors.blueAccent,
-                                fontWeight: FontWeight.w600),
+                child: status == false
+                    ? Center(child: Text("Tidak ada data kesehatan"))
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                bulanKesehatan,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          UpdateKesehatanBalita(
+                                            id: dataKesehatan.id.toString(),
+                                            babyId:
+                                                dataKesehatan.babyId.toString(),
+                                            name: dataBalita.name.toString(),
+                                            selectedBulan: (bln.indexOf(
+                                                                selectedBln) +
+                                                            1)
+                                                        .toString()
+                                                        .length ==
+                                                    1
+                                                ? "0" +
+                                                    (bln.indexOf(selectedBln) +
+                                                            1)
+                                                        .toString()
+                                                : (bln.indexOf(selectedBln) + 1)
+                                                    .toString(),
+                                          )));
+                                },
+                                child: Text(
+                                  "✎ Perbarui",
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 16,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    // Text(
-                    //   "September",
-                    //   style: TextStyle(
-                    //       fontSize: 20,
-                    //       color: Colors.black87,
-                    //       fontWeight: FontWeight.w600),
-                    // ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Berat Badan",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "17 Kg",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Tinggi Badan",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "100 cm",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Riwayat Penyakit",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        ),
-                        Text(
-                          "Tidak ada",
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff696969)),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+                          // Text(
+                          //   "September",
+                          //   style: TextStyle(
+                          //       fontSize: 20,
+                          //       color: Colors.black87,
+                          //       fontWeight: FontWeight.w600),
+                          // ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Berat Badan",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.weight.toString() + " kg",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Tinggi Badan",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.height.toString() + " cm",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Lingkar kepala",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.headCircumference.toString() +
+                                    " cm",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Lingkar perut",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.stomachCircumference.toString() +
+                                    " cm",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
               ),
               Spacer(),
               SizedBox(
@@ -378,7 +474,10 @@ class _DetailBalitaState extends State<DetailBalita> {
                   ))),
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => InputKesehatanBalita()));
+                        builder: (context) => InputKesehatanBalita(
+                              name: widget.name,
+                              id: widget.id,
+                            )));
                   },
                   child: Text(
                     'Tambah Data Kesehatan',
@@ -406,6 +505,7 @@ class _DetailBalitaState extends State<DetailBalita> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => UpdateBalita(
                               name: widget.name,
+                              id: widget.id,
                             )));
                   },
                   child: Text(

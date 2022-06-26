@@ -5,38 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:posyandu/home/data/model/data_balita.dart';
 import 'package:posyandu/home/data/services/get_detail_balita.dart';
 import 'package:posyandu/style/Custom.dart';
 
+import '../../../../utils/apiservices.dart';
+import '../../model/balita/balita_model.dart';
+
 class UpdateBalita extends StatefulWidget {
   final String name;
-  const UpdateBalita({Key? key, required this.name}) : super(key: key);
+  final String id;
+  const UpdateBalita({Key? key, required this.name, required this.id})
+      : super(key: key);
 
   @override
   _UpdateBalitaState createState() => _UpdateBalitaState();
 }
 
 class _UpdateBalitaState extends State<UpdateBalita> {
-  DataBalita dataBalita = DataBalita();
-  List jenisKelamin = ["Laki-Laki", "Perempuan"];
+  BalitaModel dataBalita = BalitaModel();
+  List jenisKelamin = ["-", "Laki-Laki", "Perempuan"];
   List kotaDomisili = ["Kota Malang"];
-  List kecDomisili = [
-    "Blimbing",
-    "Kedung Kandang",
-    "Klojen",
-    "Lowokwaru",
-    "Sukun",
-  ];
 
-  String selectedjenisKelamin = 'Laki-Laki';
+  String selectedjenisKelamin = '-';
   String selectedKotaDomisili = 'Kota Malang';
-  String selectedKecDomisili = 'Blimbing';
   String dateSelected = '';
   String monthSelected = '';
   String yearSelected = '';
   String nowDateSelected = '';
   String nowMonthSelected = '';
+  String inputJK = "";
   DateTime _fromDate = DateTime.now();
   final dateFormat = new DateFormat('dd MMMM yyyy');
   String choseDate = '';
@@ -81,38 +78,114 @@ class _UpdateBalitaState extends State<UpdateBalita> {
     });
   }
 
-  getDetailData() async {
-    try {
-      var response = await getDetailBalita(widget.name);
-      print(response);
-      if (response["error"] == false) {
-        setState(() {
-          var data = response["data"];
+  // getDetailData() async {
+  //   try {
+  //     var response = await getDetailBalita(widget.name);
+  //     print(response);
+  //     if (response["error"] == false) {
+  //       setState(() {
+  //         var data = response["data"];
 
-          dataBalita = DataBalita.fromMap(data);
+  //         dataBalita = BalitaModel.fromMap(data);
+  //         _namaController.text = dataBalita.name.toString();
+  //         _tglLahirController.text = DateFormat.d()
+  //                 .format(DateTime.parse(dataBalita.birthDate.toString())) +
+  //             " " +
+  //             DateFormat.MMMM('id_ID')
+  //                 .format(DateTime.parse(dataBalita.birthDate.toString())) +
+  //             " " +
+  //             DateFormat.y()
+  //                 .format(DateTime.parse(dataBalita.birthDate.toString()));
+  //         _ibuKandungController.text = dataBalita.motherName.toString();
+  //         selectedjenisKelamin =
+  //             dataBalita.gender.toString() == "L" ? "Laki-Laki" : "Perempuan";
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     setState(() {
+  //       Fluttertoast.showToast(
+  //           msg: 'Periksa jaringan internet anda',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 2,
+  //           backgroundColor: Colors.orangeAccent,
+  //           textColor: Colors.white,
+  //           fontSize: 16);
+  //     });
+  //   }
+  // }
+
+  getDetailData(String id) async {
+    ApiServices.get("babies/$id").then((value) {
+      try {
+        print("response list_bayi -> $value");
+        setState(() {
+          var data = value["data"];
+          debugPrint("hasil data -> $data");
+          dataBalita = BalitaModel.fromMap(data);
+
           _namaController.text = dataBalita.name.toString();
+          selectedjenisKelamin = dataBalita.gender.toString();
+          jenisKelamin[0] = selectedjenisKelamin;
+          selectedKotaDomisili = dataBalita.birthPlace.toString();
+          // kotaDomisili[0] = selectedKotaDomisili;
           _tglLahirController.text = DateFormat.d()
-                  .format(DateTime.parse(dataBalita.birthdate.toString())) +
+                  .format(DateTime.parse(dataBalita.birthDate.toString())) +
               " " +
               DateFormat.MMMM('id_ID')
-                  .format(DateTime.parse(dataBalita.birthdate.toString())) +
+                  .format(DateTime.parse(dataBalita.birthDate.toString())) +
               " " +
               DateFormat.y()
-                  .format(DateTime.parse(dataBalita.birthdate.toString()));
+                  .format(DateTime.parse(dataBalita.birthDate.toString()));
+          _anakKeController.text = dataBalita.childOrder.toString();
           _ibuKandungController.text = dataBalita.motherName.toString();
-          selectedjenisKelamin =
-              dataBalita.gender.toString() == "L" ? "Laki-Laki" : "Perempuan";
         });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
+      } catch (e) {
         Fluttertoast.showToast(
-            msg: 'Periksa jaringan internet anda',
+            msg: 'Gagal memuat data',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 2,
             backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      }
+    });
+  }
+
+  updateDataBalita(String id) async {
+    try {
+      ApiServices.post("babies/$id", {
+        "name": _namaController.text,
+        "gender": inputJK == "" ? dataBalita.gender.toString() : inputJK,
+        "birth_place": selectedKotaDomisili,
+        "birth_date":
+            choseDate == "" ? dataBalita.birthDate.toString() : choseDate,
+        "child_order": _anakKeController.text,
+        "mother_name": _ibuKandungController.text
+      }).then((value) {
+        print(value);
+        Navigator.pop(context);
+        setState(() {
+          Fluttertoast.showToast(
+              msg: 'Data berhasil diperbarui',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.blueAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        });
+      });
+    } catch (e) {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: "Error $e",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.blueAccent,
             textColor: Colors.white,
             fontSize: 16);
       });
@@ -123,7 +196,7 @@ class _UpdateBalitaState extends State<UpdateBalita> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDetailData();
+    getDetailData(widget.id);
   }
 
   @override
@@ -225,13 +298,15 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                               .toList(),
                           value: selectedjenisKelamin,
                           onChanged: (value) {
-                            if (value != null) {
-                              setState(() {
-                                selectedjenisKelamin = value.toString();
-                                // aktifSimpan = true;
-                              });
-                              print(selectedjenisKelamin);
-                            }
+                            setState(() {
+                              selectedjenisKelamin = value.toString();
+                              if (value.toString() == "Laki-Laki") {
+                                inputJK = "Laki-Laki";
+                              } else {
+                                inputJK = "Perempuan";
+                              }
+                            });
+                            print(inputJK);
                           }),
                     ),
                     Container(
@@ -394,15 +469,7 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                           borderRadius: BorderRadius.circular(12),
                         ))),
                         onPressed: () {
-                          Navigator.pop(context);
-                          Fluttertoast.showToast(
-                              msg: "Data berhasil diperbarui",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 2,
-                              backgroundColor: Colors.greenAccent,
-                              textColor: Colors.white,
-                              fontSize: 16);
+                          updateDataBalita(widget.id);
                         },
                         child: Text(
                           'Perbarui',

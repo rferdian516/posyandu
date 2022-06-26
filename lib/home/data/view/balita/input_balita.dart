@@ -1,13 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:date_time_format/src/date_time_extension_methods.dart';
+import 'package:date_time_format/date_time_format.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:posyandu/home/data/services/post_data_balita.dart';
-import 'package:posyandu/home/data/view/balita/balita.dart';
 import 'package:posyandu/style/Custom.dart';
+import 'package:posyandu/utils/apiservices.dart';
 
 class InputBalita extends StatefulWidget {
   const InputBalita({Key? key}) : super(key: key);
@@ -81,30 +80,78 @@ class _InputBalitaState extends State<InputBalita> {
     });
   }
 
-  inputDataBalita() async {
-    var nama = _namaController.text;
-    var anakKe = _anakKeController.text;
-    var ibuKandung = _ibuKandungController.text;
+  // inputDataBalita() async {
+  //   var nama = _namaController.text;
+  //   var anakKe = _anakKeController.text;
+  //   var ibuKandung = _ibuKandungController.text;
 
-    if (nama == "" && anakKe == "" && ibuKandung == "") {
-      setState(() {
-        Fluttertoast.showToast(
-            msg: 'Pastikan semua form sudah terisi',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 2,
-            backgroundColor: Colors.orangeAccent,
-            textColor: Colors.white,
-            fontSize: 16);
-      });
-    } else {
-      try {
-        var response =
-            await insertBalita(nama, choseDate, "5", "68", ibuKandung, inputJK);
-        print(response);
-        if (response['error'] == false) {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => Balita()));
+  //   if (nama == "" && anakKe == "" && ibuKandung == "") {
+  //     setState(() {
+  //       Fluttertoast.showToast(
+  //           msg: 'Pastikan semua form sudah terisi',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //           gravity: ToastGravity.BOTTOM,
+  //           timeInSecForIosWeb: 2,
+  //           backgroundColor: Colors.orangeAccent,
+  //           textColor: Colors.white,
+  //           fontSize: 16);
+  //     });
+  //   } else {
+  //     try {
+  //       var response =
+  //           await insertBalita(nama, choseDate, "5", "68", ibuKandung, inputJK);
+  //       print(response);
+  //       if (response['error'] == false) {
+  //         Navigator.of(context)
+  //             .push(MaterialPageRoute(builder: (context) => Balita()));
+  //         Fluttertoast.showToast(
+  //             msg: 'Data berhasil ditambahkan',
+  //             toastLength: Toast.LENGTH_SHORT,
+  //             gravity: ToastGravity.BOTTOM,
+  //             timeInSecForIosWeb: 2,
+  //             backgroundColor: Colors.blueAccent,
+  //             textColor: Colors.white,
+  //             fontSize: 16);
+  //       } else {
+  //         setState(() {
+  //           Fluttertoast.showToast(
+  //               msg: 'Terjadi kesalahan',
+  //               toastLength: Toast.LENGTH_SHORT,
+  //               gravity: ToastGravity.BOTTOM,
+  //               timeInSecForIosWeb: 2,
+  //               backgroundColor: Colors.orangeAccent,
+  //               textColor: Colors.white,
+  //               fontSize: 16);
+  //         });
+  //       }
+  //     } catch (e) {
+  //       setState(() {
+  //         Fluttertoast.showToast(
+  //             msg: 'Periksa jaringan internet anda',
+  //             toastLength: Toast.LENGTH_SHORT,
+  //             gravity: ToastGravity.BOTTOM,
+  //             timeInSecForIosWeb: 2,
+  //             backgroundColor: Colors.orangeAccent,
+  //             textColor: Colors.white,
+  //             fontSize: 16);
+  //       });
+  //     }
+  //   }
+  // }
+
+  inputDataBalita() async {
+    try {
+      ApiServices.post("babies", {
+        "name": _namaController.text,
+        "gender": inputJK,
+        "birth_place": selectedKotaDomisili,
+        "birth_date": choseDate,
+        "child_order": _anakKeController.text,
+        "mother_name": _ibuKandungController.text
+      }).then((value) {
+        Navigator.pop(context);
+        print(value);
+        setState(() {
           Fluttertoast.showToast(
               msg: 'Data berhasil ditambahkan',
               toastLength: Toast.LENGTH_SHORT,
@@ -113,30 +160,19 @@ class _InputBalitaState extends State<InputBalita> {
               backgroundColor: Colors.blueAccent,
               textColor: Colors.white,
               fontSize: 16);
-        } else {
-          setState(() {
-            Fluttertoast.showToast(
-                msg: 'Terjadi kesalahan',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.orangeAccent,
-                textColor: Colors.white,
-                fontSize: 16);
-          });
-        }
-      } catch (e) {
-        setState(() {
-          Fluttertoast.showToast(
-              msg: 'Periksa jaringan internet anda',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 2,
-              backgroundColor: Colors.orangeAccent,
-              textColor: Colors.white,
-              fontSize: 16);
         });
-      }
+      });
+    } catch (e) {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: "Error $e",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.blueAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
     }
   }
 
@@ -239,12 +275,12 @@ class _InputBalitaState extends State<InputBalita> {
                         setState(() {
                           selectedjenisKelamin = value.toString();
                           if (value.toString() == "Laki-Laki") {
-                            inputJK = "L";
+                            inputJK = "Laki-Laki";
                           } else {
-                            inputJK = "P";
+                            inputJK = "Perempuan";
                           }
                         });
-                        // print(inputJK);
+                        print(inputJK);
                         // print(selectedjenisKelamin);
                       }
                     }),
@@ -409,14 +445,6 @@ class _InputBalitaState extends State<InputBalita> {
                   onPressed: () {
                     inputDataBalita();
                     // Navigator.pop(context);
-                    Fluttertoast.showToast(
-                        msg: "Data berhasil disimpan",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 2,
-                        backgroundColor: Colors.greenAccent,
-                        textColor: Colors.white,
-                        fontSize: 16);
                   },
                   child: Text(
                     'Tambah',

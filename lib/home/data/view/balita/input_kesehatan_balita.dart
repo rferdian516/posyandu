@@ -1,16 +1,29 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posyandu/style/Custom.dart';
 
+import '../../../../utils/apiservices.dart';
+
 class InputKesehatanBalita extends StatefulWidget {
-  const InputKesehatanBalita({Key? key}) : super(key: key);
+  final String name;
+  final String id;
+  const InputKesehatanBalita({Key? key, required this.name, required this.id})
+      : super(key: key);
 
   @override
   _InputKesehatanBalitaState createState() => _InputKesehatanBalitaState();
 }
 
 class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
+  TextEditingController namaController = TextEditingController();
+  TextEditingController bbController = TextEditingController();
+  TextEditingController tbController = TextEditingController();
+  TextEditingController lkController = TextEditingController();
+  TextEditingController lpController = TextEditingController();
+  TextEditingController usiaController = TextEditingController();
+
   List jenisKelamin = ["Laki-Laki", "Perempuan"];
   List kotaDomisili = ["Kota Malang"];
   List kecDomisili = [
@@ -39,6 +52,53 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
   String selectedKotaDomisili = 'Kota Malang';
   String selectedKecDomisili = 'Blimbing';
   String selectedBln = 'Januari';
+  String selectedIndex = '0';
+
+  inputDataKesehatan() async {
+    try {
+      ApiServices.post("monthly-healt-babies/${widget.id}", {
+        "baby_id": widget.id,
+        "height": tbController.text,
+        "weight": bbController.text,
+        "head_circumference": lkController.text,
+        "stomach_circumference": lpController.text,
+        "month_age": usiaController.text,
+        "month_date": "2022-$selectedIndex-01"
+      }).then((value) {
+        Navigator.pop(context);
+        print(value);
+        setState(() {
+          Fluttertoast.showToast(
+              msg: 'Data berhasil ditambahkan',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.blueAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        });
+      });
+    } catch (e) {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: "Error $e",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.blueAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    namaController.text = widget.name;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +138,8 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                readOnly: true,
+                controller: namaController,
                 keyboardType: TextInputType.text,
                 decoration: customTextField("Masukan nama balita"),
                 // onChanged: (value) async {
@@ -136,9 +197,16 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                       if (value != null) {
                         setState(() {
                           selectedBln = value.toString();
+                          selectedIndex = (bln.indexOf(selectedBln) + 1)
+                                      .toString()
+                                      .length ==
+                                  1
+                              ? "0" + (bln.indexOf(selectedBln) + 1).toString()
+                              : (bln.indexOf(selectedBln) + 1).toString();
                           // aktifSimpan = true;
                         });
-                        print(selectedBln);
+                        print(selectedBln + "=>" + selectedIndex);
+                        // print(value.);
                       }
                     }),
               ),
@@ -154,7 +222,7 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: bbController,
                 keyboardType: TextInputType.number,
                 decoration: customTextField("Masukan berat badan"),
                 // onChanged: (value) async {
@@ -181,9 +249,63 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: tbController,
                 keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan berat badan"),
+                decoration: customTextField("Masukan tinggi badan"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 5,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Lingkar kepala",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: lkController,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan lingkar kepala"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 5,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Lingkar Perut",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: lpController,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan lingkar perut"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
@@ -208,9 +330,9 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                 ),
               ),
               TextFormField(
-                // controller: username,
+                controller: usiaController,
                 keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan berat badan"),
+                decoration: customTextField("Masukan usia"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
@@ -234,8 +356,7 @@ class _InputKesehatanBalitaState extends State<InputKesehatanBalita> {
                     borderRadius: BorderRadius.circular(12),
                   ))),
                   onPressed: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Dashboard()));
+                    inputDataKesehatan();
                   },
                   child: Text(
                     'Tambah',

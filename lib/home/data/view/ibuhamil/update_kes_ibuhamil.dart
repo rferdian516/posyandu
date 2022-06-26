@@ -2,31 +2,32 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
-import 'package:posyandu/style/Custom.dart';
-import 'package:posyandu/utils/apiservices.dart';
+import 'package:posyandu/home/data/model/ibuhamil/ibu_kesehatan.dart';
 
+import '../../../../style/Custom.dart';
+import '../../../../utils/apiservices.dart';
 import '../../model/balita/balita_kesehatan.dart';
 
-class UpdateKesehatanBalita extends StatefulWidget {
+class UpdateKesehatanIbuHamil extends StatefulWidget {
   final String id;
-  final String babyId;
+  final String womenId;
   final String name;
   final String selectedBulan;
-  const UpdateKesehatanBalita(
+  const UpdateKesehatanIbuHamil(
       {Key? key,
       required this.id,
-      required this.babyId,
+      required this.womenId,
       required this.name,
       required this.selectedBulan})
       : super(key: key);
 
   @override
-  _UpdateKesehatanBalitaState createState() => _UpdateKesehatanBalitaState();
+  State<UpdateKesehatanIbuHamil> createState() =>
+      _UpdateKesehatanIbuHamilState();
 }
 
-class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
-  BalitaKesehatan dataKesehatan = BalitaKesehatan();
+class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
+  IbuKesehatan dataKesehatan = IbuKesehatan();
 
   TextEditingController namaController = TextEditingController();
   TextEditingController bbController = TextEditingController();
@@ -66,13 +67,11 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
 
   inputDataKesehatan() async {
     try {
-      ApiServices.post("monthly-healt-babies/${widget.id}/update", {
-        "baby_id": widget.babyId,
+      ApiServices.post("monthly-healt-pregnant-womens/${widget.id}/update", {
+        "baby_id": widget.womenId,
         "height": tbController.text,
         "weight": bbController.text,
-        "head_circumference": lkController.text,
         "stomach_circumference": lpController.text,
-        "month_age": usiaController.text,
         "month_date": "2022-${widget.selectedBulan}-01"
       }).then((value) {
         Navigator.pop(context);
@@ -104,19 +103,17 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
 
   getDataKesehatan(String id, String bln) async {
     ApiServices.get(
-            "monthly-healt-babies/${widget.babyId}?year=2022&month=${widget.selectedBulan}")
+            "monthly-healt-pregnant-womens/${widget.womenId}?year=2022&month=${widget.selectedBulan}")
         .then((value) {
       try {
         print("response detail kesehatan -> $value");
         setState(() {
           var data = value["data"][0];
           debugPrint("hasil data -> $data");
-          dataKesehatan = BalitaKesehatan.fromMap(data);
+          dataKesehatan = IbuKesehatan.fromMap(data);
           bbController.text = dataKesehatan.weight.toString();
           tbController.text = dataKesehatan.height.toString();
-          lkController.text = dataKesehatan.headCircumference.toString();
           lpController.text = dataKesehatan.stomachCircumference.toString();
-          usiaController.text = dataKesehatan.monthAge.toString();
         });
       } catch (e) {
         print(e);
@@ -129,8 +126,8 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
     // TODO: implement initState
     super.initState();
     namaController.text = widget.name;
-    getDataKesehatan(widget.babyId, widget.selectedBulan);
-    print("${widget.babyId}, ${widget.selectedBulan}");
+    getDataKesehatan(widget.womenId, widget.selectedBulan);
+    print("${widget.womenId}, ${widget.selectedBulan}");
   }
 
   @override
@@ -139,7 +136,7 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "Kesehatan Balita",
+          "Perbarui Data Kesehatan",
           style: TextStyle(
               fontSize: 24, color: Colors.black87, fontWeight: FontWeight.w700),
         ),
@@ -294,33 +291,6 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
                 margin: EdgeInsets.only(bottom: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Lingkar kepala",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-              TextFormField(
-                controller: lkController,
-                keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan lingkar kepala"),
-                // onChanged: (value) async {
-                //   final prefs = await _prefs;
-                //   prefs.setString("userName", value);
-                // },
-                style: TextStyle(
-                    color: Color(0xff3fa9a0),
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400),
-                maxLength: 5,
-                // validator: validateName,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 16),
-                alignment: Alignment.centerLeft,
-                child: Text(
                   "Lingkar Perut",
                   style: TextStyle(
                       fontSize: 16,
@@ -342,33 +312,6 @@ class _UpdateKesehatanBalitaState extends State<UpdateKesehatanBalita> {
                     fontSize: 16,
                     fontWeight: FontWeight.w400),
                 maxLength: 5,
-                // validator: validateName,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 16),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Usia (dalam bulan)",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w700),
-                ),
-              ),
-              TextFormField(
-                controller: usiaController,
-                keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan usia"),
-                // onChanged: (value) async {
-                //   final prefs = await _prefs;
-                //   prefs.setString("userName", value);
-                // },
-                style: TextStyle(
-                    color: Color(0xff3fa9a0),
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400),
-                maxLength: 3,
                 // validator: validateName,
               ),
               Container(
