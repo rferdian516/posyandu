@@ -5,10 +5,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:posyandu/home/akun/model/m_user.dart';
 import 'package:posyandu/home/akun/services/get_profile.dart';
 import 'package:posyandu/home/data/services/get_list_data_balita.dart';
+import 'package:posyandu/utils/apiservices.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../data/model/balita/balita_model.dart';
+import '../../data/model/ibuhamil/ibu_model.dart';
+import '../../data/model/lansia/lansia_model.dart';
 
 class Beranda extends StatefulWidget {
   const Beranda({Key? key}) : super(key: key);
@@ -31,6 +34,8 @@ class _BerandaState extends State<Beranda> {
   }
 
   List<BalitaModel> _listbalita = [];
+  List<IbuModel> _listIbu = [];
+  List<LansiaModel> _listLansia = [];
   List<_BalitaData> dataBalita = [];
 
   List<_BalitaData> dataIbuHamil = [
@@ -75,42 +80,78 @@ class _BerandaState extends State<Beranda> {
   }
 
   getListData() async {
-    try {
-      var response = await getListBalita();
-      print(response);
-      if (response["error"] == false) {
+    ApiServices.get("babies").then((value) {
+      try {
+        print("response list_bayi -> $value");
         setState(() {
-          var data = response["data"] as List;
-
+          var data = value["data"] as List;
+          debugPrint("hasil data -> $data");
           _listbalita = data
               .map((e) => BalitaModel.fromMap(e))
               .toList()
               .reversed
               .toList();
-
-          counterBalita = _listbalita.length;
-          dataBalita = [
-            _BalitaData('Jan', counterBalita),
-            _BalitaData('Feb', 0),
-            _BalitaData('Mar', 0),
-            _BalitaData('Apr', 0),
-            _BalitaData('Mei', 0)
-          ];
         });
-      }
-    } catch (e) {
-      print(e);
-      setState(() {
+      } catch (e) {
         Fluttertoast.showToast(
-            msg: 'Periksa jaringan internet anda',
+            msg: 'Gagal memuat data',
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 2,
             backgroundColor: Colors.orangeAccent,
             textColor: Colors.white,
             fontSize: 16);
-      });
-    }
+      }
+    });
+  }
+
+  getListDataIbuHamil() async {
+    ApiServices.get("pregnant-womens").then((value) {
+      try {
+        print("response list_ibu -> $value");
+        setState(() {
+          var data = value["data"] as List;
+          debugPrint("hasil data -> $data");
+          _listIbu =
+              data.map((e) => IbuModel.fromMap(e)).toList().reversed.toList();
+        });
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Gagal memuat data',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      }
+    });
+  }
+
+  getListDataLansia() async {
+    ApiServices.get("elderlies").then((value) {
+      try {
+        print("response list_lansia -> $value");
+        setState(() {
+          var data = value["data"] as List;
+          debugPrint("hasil data -> $data");
+          _listLansia = data
+              .map((e) => LansiaModel.fromMap(e))
+              .toList()
+              .reversed
+              .toList();
+        });
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Gagal memuat data',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.orangeAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      }
+    });
   }
 
   @override
@@ -120,6 +161,8 @@ class _BerandaState extends State<Beranda> {
     getData();
     getUserProfile();
     getListData();
+    getListDataIbuHamil();
+    getListDataLansia();
   }
 
   @override
@@ -182,7 +225,7 @@ class _BerandaState extends State<Beranda> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(counterBalita.toString(),
+                                  Text("${_listbalita.length}",
                                       style: TextStyle(
                                           fontSize: 24,
                                           color: Colors.white,
@@ -212,7 +255,7 @@ class _BerandaState extends State<Beranda> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text("0",
+                                  Text("${_listIbu.length}",
                                       style: TextStyle(
                                           fontSize: 24,
                                           color: Colors.white,
@@ -242,7 +285,7 @@ class _BerandaState extends State<Beranda> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text("0",
+                                  Text("${_listLansia.length}",
                                       style: TextStyle(
                                           fontSize: 24,
                                           color: Colors.white,

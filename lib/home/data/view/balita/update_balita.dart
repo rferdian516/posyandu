@@ -258,59 +258,59 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                       maxLength: 40,
                       // validator: validateName,
                     ),
+                    // Container(
+                    //   margin: EdgeInsets.only(bottom: 16),
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     "Jenis Kelamin",
+                    //     style: TextStyle(
+                    //         fontSize: 16,
+                    //         color: Colors.black87,
+                    //         fontWeight: FontWeight.w700),
+                    //   ),
+                    // ),
+                    // Container(
+                    //   width: MediaQuery.of(context).size.width,
+                    //   padding: EdgeInsets.symmetric(horizontal: 8),
+                    //   decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       border: Border.all(color: Colors.grey),
+                    //       borderRadius: BorderRadius.all(Radius.circular(16))),
+                    //   child: DropdownButton(
+                    //       underline: SizedBox(),
+                    //       isExpanded: true,
+                    //       items: this
+                    //           .jenisKelamin
+                    //           .map((item) => DropdownMenuItem<String>(
+                    //                 value: item,
+                    //                 child: Container(
+                    //                     margin: const EdgeInsets.only(
+                    //                         left: 8, right: 8),
+                    //                     child: Text(
+                    //                       item,
+                    //                       style: TextStyle(
+                    //                           fontSize: 15,
+                    //                           fontFamily: 'Poppins',
+                    //                           color: Colors.black54,
+                    //                           fontWeight: FontWeight.w600),
+                    //                     )),
+                    //               ))
+                    //           .toList(),
+                    //       value: selectedjenisKelamin,
+                    //       onChanged: (value) {
+                    //         setState(() {
+                    //           selectedjenisKelamin = value.toString();
+                    //           if (value.toString() == "Laki-Laki") {
+                    //             inputJK = "Laki-Laki";
+                    //           } else {
+                    //             inputJK = "Perempuan";
+                    //           }
+                    //         });
+                    //         print(inputJK);
+                    //       }),
+                    // ),
                     Container(
                       margin: EdgeInsets.only(bottom: 16),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Jenis Kelamin",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: DropdownButton(
-                          underline: SizedBox(),
-                          isExpanded: true,
-                          items: this
-                              .jenisKelamin
-                              .map((item) => DropdownMenuItem<String>(
-                                    value: item,
-                                    child: Container(
-                                        margin: const EdgeInsets.only(
-                                            left: 8, right: 8),
-                                        child: Text(
-                                          item,
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontFamily: 'Poppins',
-                                              color: Colors.black54,
-                                              fontWeight: FontWeight.w600),
-                                        )),
-                                  ))
-                              .toList(),
-                          value: selectedjenisKelamin,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedjenisKelamin = value.toString();
-                              if (value.toString() == "Laki-Laki") {
-                                inputJK = "Laki-Laki";
-                              } else {
-                                inputJK = "Perempuan";
-                              }
-                            });
-                            print(inputJK);
-                          }),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 16),
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Tempat Lahir",
