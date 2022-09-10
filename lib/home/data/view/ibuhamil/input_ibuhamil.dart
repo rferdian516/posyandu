@@ -47,6 +47,7 @@ class _InputIbuHamilState extends State<InputIbuHamil> {
   TextEditingController _tglLahirController = TextEditingController();
   TextEditingController _usiaController = TextEditingController();
   TextEditingController _suamiController = TextEditingController();
+  TextEditingController _hamilKeController = TextEditingController();
   TextEditingController _alamatController = TextEditingController();
 
   void getDateFromDialog() async {
@@ -221,7 +222,7 @@ class _InputIbuHamilState extends State<InputIbuHamil> {
               TextFormField(
                 controller: _namaController,
                 keyboardType: TextInputType.text,
-                decoration: customTextField("Masukan nama Ibu hamil"),
+                decoration: customTextField("Masukan nama lengkap"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
@@ -342,7 +343,7 @@ class _InputIbuHamilState extends State<InputIbuHamil> {
               TextFormField(
                 controller: _usiaController,
                 keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan urutan anak  "),
+                decoration: customTextField("Masukan usia"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
@@ -369,7 +370,34 @@ class _InputIbuHamilState extends State<InputIbuHamil> {
               TextFormField(
                 controller: _suamiController,
                 keyboardType: TextInputType.text,
-                decoration: customTextField("Masukan nama ibu kandung"),
+                decoration: customTextField("Masukan nama suami"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 40,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Hamil ke-",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: _hamilKeController,
+                keyboardType: TextInputType.text,
+                decoration: customTextField("Masukan hamil ke"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
@@ -396,7 +424,7 @@ class _InputIbuHamilState extends State<InputIbuHamil> {
               TextFormField(
                 controller: _alamatController,
                 keyboardType: TextInputType.text,
-                decoration: customTextField("Masukan nama ibu kandung"),
+                decoration: customTextField("Masukan alamat lengkap"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);

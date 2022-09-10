@@ -105,7 +105,7 @@ class _InputKesehatanLansiaState extends State<InputKesehatanLansia> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "Kesehatan Balita",
+          "Kesehatan Lansia",
           style: TextStyle(
               fontSize: 24, color: Colors.black87, fontWeight: FontWeight.w700),
         ),

@@ -186,57 +186,88 @@ class _BalitaState extends State<Balita> {
     );
   }
 
-  Widget _buildList(String name, age, id) => InkWell(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => DetailBalita(
-                    name: name,
-                    id: id,
-                  )));
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24),
-          alignment: Alignment.center,
-          height: 80,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-            color: Color(0xffD6EEFA),
-            borderRadius: BorderRadius.all(
-              Radius.circular(12),
-            ),
+  Widget _buildList(String name, age, id) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 24),
+        alignment: Alignment.center,
+        height: 80,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          color: Color(0xffD6EEFA),
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                height: 50,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500)),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Text(age,
-                        style: TextStyle(
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              height: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black54,
-                        )),
-                  ],
-                ),
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500)),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Text(age,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      )),
+                ],
               ),
-              Text("Detail",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500)),
-            ],
-          ),
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetailBalita(
+                              name: name,
+                              id: id,
+                            )));
+                  },
+                  child: Text("Detail",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500)),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                InkWell(
+                    onTap: () {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Hapus data'),
+                          content: const Text('Yakin menghapus data ini?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Tidak'),
+                              child: const Text('Tidak'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Ya'),
+                              child: const Text('Tidak'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.redAccent,
+                    ))
+              ],
+            )
+          ],
         ),
       );
 }

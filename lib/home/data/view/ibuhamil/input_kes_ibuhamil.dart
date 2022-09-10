@@ -24,6 +24,8 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
   TextEditingController lpController = TextEditingController();
   TextEditingController usiaController = TextEditingController();
 
+  TextEditingController usiaKehamilanController = TextEditingController();
+
   List jenisKelamin = ["Laki-Laki", "Perempuan"];
   List kotaDomisili = ["Kota Malang"];
   List kecDomisili = [
@@ -103,7 +105,7 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "Kesehatan Balita",
+          "Kesehatan Ibu Hamil",
           style: TextStyle(
               fontSize: 24, color: Colors.black87, fontWeight: FontWeight.w700),
         ),
@@ -212,6 +214,33 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
                 margin: EdgeInsets.symmetric(vertical: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
+                  "Usia Kehamilan",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: usiaKehamilanController,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan berat badan"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 5,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
                   "Berat Badan",
                   style: TextStyle(
                       fontSize: 16,
@@ -266,7 +295,7 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
                 margin: EdgeInsets.only(bottom: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Lingkar Perut",
+                  "Lingkar Kepala",
                   style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -276,7 +305,7 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
               TextFormField(
                 controller: lpController,
                 keyboardType: TextInputType.number,
-                decoration: customTextField("Masukan lingkar perut"),
+                decoration: customTextField("Masukan lingkar kepala"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);
