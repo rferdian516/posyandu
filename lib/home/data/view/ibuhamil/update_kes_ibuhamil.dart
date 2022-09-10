@@ -35,6 +35,7 @@ class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
   TextEditingController lkController = TextEditingController();
   TextEditingController lpController = TextEditingController();
   TextEditingController usiaController = TextEditingController();
+  TextEditingController usiaKehamilanController = TextEditingController();
 
   List jenisKelamin = ["Laki-Laki", "Perempuan"];
   List kotaDomisili = ["Kota Malang"];
@@ -72,7 +73,9 @@ class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
         "height": tbController.text,
         "weight": bbController.text,
         "stomach_circumference": lpController.text,
-        "month_date": "2022-${widget.selectedBulan}-01"
+        "month_date": "2022-${widget.selectedBulan}-01",
+        "head_circle": lkController.text,
+        "pregnant_old": usiaKehamilanController.text
       }).then((value) {
         Navigator.pop(context);
         print(value);
@@ -114,6 +117,8 @@ class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
           bbController.text = dataKesehatan.weight.toString();
           tbController.text = dataKesehatan.height.toString();
           lpController.text = dataKesehatan.stomachCircumference.toString();
+          lkController.text = dataKesehatan.headCircle.toString();
+          usiaKehamilanController.text = dataKesehatan.pregnantOld.toString();
         });
       } catch (e) {
         print(e);
@@ -237,6 +242,33 @@ class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
                 margin: EdgeInsets.symmetric(vertical: 16),
                 alignment: Alignment.centerLeft,
                 child: Text(
+                  "Usia Kehamilan",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: usiaKehamilanController,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan berat badan"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 5,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
                   "Berat Badan",
                   style: TextStyle(
                       fontSize: 16,
@@ -302,6 +334,33 @@ class _UpdateKesehatanIbuHamilState extends State<UpdateKesehatanIbuHamil> {
                 controller: lpController,
                 keyboardType: TextInputType.number,
                 decoration: customTextField("Masukan lingkar perut"),
+                // onChanged: (value) async {
+                //   final prefs = await _prefs;
+                //   prefs.setString("userName", value);
+                // },
+                style: TextStyle(
+                    color: Color(0xff3fa9a0),
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400),
+                maxLength: 5,
+                // validator: validateName,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 16),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Lingkar Kepala",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.w700),
+                ),
+              ),
+              TextFormField(
+                controller: lkController,
+                keyboardType: TextInputType.number,
+                decoration: customTextField("Masukan lingkar kepala"),
                 // onChanged: (value) async {
                 //   final prefs = await _prefs;
                 //   prefs.setString("userName", value);

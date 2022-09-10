@@ -6,6 +6,8 @@ class IbuKesehatan {
   int? height;
   int? weight;
   int? stomachCircumference;
+  int? headCircle;
+  int? pregnantOld;
   String? monthDate;
   String? createdAt;
   String? updatedAt;
@@ -16,6 +18,8 @@ class IbuKesehatan {
     this.height,
     this.weight,
     this.stomachCircumference,
+    this.headCircle,
+    this.pregnantOld,
     this.monthDate,
     this.createdAt,
     this.updatedAt,
@@ -23,7 +27,7 @@ class IbuKesehatan {
 
   @override
   String toString() {
-    return 'IbuKesehatan(id: $id, pregnantWomenId: $pregnantWomenId, height: $height, weight: $weight, stomachCircumference: $stomachCircumference, monthDate: $monthDate, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'IbuKesehatan(id: $id, pregnantWomenId: $pregnantWomenId, height: $height, weight: $weight, stomachCircumference: $stomachCircumference, headCircle: $headCircle, pregnantOld: $pregnantOld, monthDate: $monthDate, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   factory IbuKesehatan.fromMap(Map<String, dynamic> data) => IbuKesehatan(
@@ -32,6 +36,8 @@ class IbuKesehatan {
         height: data['height'] as int?,
         weight: data['weight'] as int?,
         stomachCircumference: data['stomach_circumference'] as int?,
+        headCircle: data['head_circle'] as int?,
+        pregnantOld: data['pregnant_old'] as int?,
         monthDate: data['month_date'] as String?,
         createdAt: data['created_at'] as String?,
         updatedAt: data['updated_at'] as String?,
@@ -43,6 +49,8 @@ class IbuKesehatan {
         'height': height,
         'weight': weight,
         'stomach_circumference': stomachCircumference,
+        'head_circle': headCircle,
+        'pregnant_old': pregnantOld,
         'month_date': monthDate,
         'created_at': createdAt,
         'updated_at': updatedAt,

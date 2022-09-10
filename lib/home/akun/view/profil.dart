@@ -51,8 +51,9 @@ class _ProfilState extends State<Profil> {
     final SharedPreferences prefs = await _prefs;
     prefs.clear();
 
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => BoardingPage()));
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => BoardingPage()),
+        (Route<dynamic> route) => false);
   }
 
   @override
@@ -349,7 +350,26 @@ class _ProfilState extends State<Profil> {
                         borderRadius: BorderRadius.circular(12),
                       ))),
                       onPressed: () {
-                        logout();
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('Logout'),
+                            content: const Text('Yakin keluar dari aplikasi?'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, 'Tidak'),
+                                child: const Text('Tidak'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  logout();
+                                },
+                                child: const Text('Ya'),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                       child: Text(
                         'Logout',

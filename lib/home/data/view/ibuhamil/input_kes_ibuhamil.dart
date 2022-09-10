@@ -20,10 +20,9 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
   TextEditingController namaController = TextEditingController();
   TextEditingController bbController = TextEditingController();
   TextEditingController tbController = TextEditingController();
-  TextEditingController lkController = TextEditingController();
   TextEditingController lpController = TextEditingController();
   TextEditingController usiaController = TextEditingController();
-
+  TextEditingController lkController = TextEditingController();
   TextEditingController usiaKehamilanController = TextEditingController();
 
   List jenisKelamin = ["Laki-Laki", "Perempuan"];
@@ -63,7 +62,9 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
         "height": tbController.text,
         "weight": bbController.text,
         "stomach_circumference": lpController.text,
-        "month_date": "2022-$selectedIndex-01"
+        "month_date": "2022-$selectedIndex-01",
+        "head_circle": lkController.text,
+        "pregnant_old": usiaKehamilanController.text
       }).then((value) {
         Navigator.pop(context);
         print(value);
@@ -303,7 +304,7 @@ class _InputKesehatanIbuHamilState extends State<InputKesehatanIbuHamil> {
                 ),
               ),
               TextFormField(
-                controller: lpController,
+                controller: lkController,
                 keyboardType: TextInputType.number,
                 decoration: customTextField("Masukan lingkar kepala"),
                 // onChanged: (value) async {

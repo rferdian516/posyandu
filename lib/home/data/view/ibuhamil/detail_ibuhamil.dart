@@ -382,13 +382,24 @@ class _DetailIbuHamilState extends State<DetailIbuHamil> {
                               ),
                             ],
                           ),
-                          // Text(
-                          //   "September",
-                          //   style: TextStyle(
-                          //       fontSize: 20,
-                          //       color: Colors.black87,
-                          //       fontWeight: FontWeight.w600),
-                          // ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Usia Kehamilan",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.pregnantOld.toString() + " bln",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
                           SizedBox(
                             height: 8,
                           ),
@@ -425,7 +436,6 @@ class _DetailIbuHamilState extends State<DetailIbuHamil> {
                               )
                             ],
                           ),
-
                           SizedBox(
                             height: 8,
                           ),
@@ -440,6 +450,24 @@ class _DetailIbuHamilState extends State<DetailIbuHamil> {
                               Text(
                                 dataKesehatan.stomachCircumference.toString() +
                                     " cm",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Lingkar Kepala",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataKesehatan.headCircle.toString() + " cm",
                                 style: TextStyle(
                                     fontSize: 14, color: Color(0xff696969)),
                               )

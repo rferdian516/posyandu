@@ -8,6 +8,8 @@ class BalitaModel {
   String? birthDate;
   int? childOrder;
   String? motherName;
+  String? fatherName;
+  String? address;
   String? createdAt;
   String? updatedAt;
 
@@ -19,13 +21,15 @@ class BalitaModel {
     this.birthDate,
     this.childOrder,
     this.motherName,
+    this.fatherName,
+    this.address,
     this.createdAt,
     this.updatedAt,
   });
 
   @override
   String toString() {
-    return 'BalitaModel(id: $id, name: $name, gender: $gender, birthPlace: $birthPlace, birthDate: $birthDate, childOrder: $childOrder, motherName: $motherName, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'BalitaModel(id: $id, name: $name, gender: $gender, birthPlace: $birthPlace, birthDate: $birthDate, childOrder: $childOrder, motherName: $motherName, fatherName: $fatherName, address: $address, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   factory BalitaModel.fromMap(Map<String, dynamic> data) => BalitaModel(
@@ -36,6 +40,8 @@ class BalitaModel {
         birthDate: data['birth_date'] as String?,
         childOrder: data['child_order'] as int?,
         motherName: data['mother_name'] as String?,
+        fatherName: data['father_name'] as String?,
+        address: data['address'] as String?,
         createdAt: data['created_at'] as String?,
         updatedAt: data['updated_at'] as String?,
       );
@@ -48,6 +54,8 @@ class BalitaModel {
         'birth_date': birthDate,
         'child_order': childOrder,
         'mother_name': motherName,
+        'fatger_name': fatherName,
+        'address': address,
         'created_at': createdAt,
         'updated_at': updatedAt,
       };

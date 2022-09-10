@@ -71,6 +71,37 @@ class _IbuHamilState extends State<IbuHamil> {
     });
   }
 
+  deleteDataIbuHamil(String id) async {
+    try {
+      ApiServices.post("pregnant-womens/$id/delete", {}).then((value) {
+        Navigator.pop(context);
+        print(value);
+        setState(() {
+          getListData();
+          Fluttertoast.showToast(
+              msg: 'Data berhasil dihapus',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 2,
+              backgroundColor: Colors.blueAccent,
+              textColor: Colors.white,
+              fontSize: 16);
+        });
+      });
+    } catch (e) {
+      setState(() {
+        Fluttertoast.showToast(
+            msg: "Error $e",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.blueAccent,
+            textColor: Colors.white,
+            fontSize: 16);
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -114,49 +145,49 @@ class _IbuHamilState extends State<IbuHamil> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Silahkan cari pada daftar nama Ibu hamil",
+                  "Berikut daftar nama ibu hamil",
                   style: TextStyle(
                       fontFamily: 'Rubik',
                       fontSize: 16,
                       color: Colors.black54,
                       fontWeight: FontWeight.w400),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: TextFormField(
-                    // readOnly: true,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.search_rounded),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16))),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 2),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(16))),
-                        contentPadding: EdgeInsets.only(left: 20),
-                        hintText: "Cari nama",
-                        hintStyle: TextStyle(
-                            color: Colors.black45,
-                            fontSize: 14,
-                            fontFamily: 'Poppins'),
-                        filled: true,
-                        fillColor: Colors.white),
-                    style: TextStyle(
-                        color: Color(0xff3fa9a0),
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400),
-                    // maxLength: 40,
-                    // validator: validateName,
-                  ),
-                ),
+                // SizedBox(
+                //   height: 20,
+                // ),
+                // Container(
+                //   width: MediaQuery.of(context).size.width,
+                //   child: TextFormField(
+                //     // readOnly: true,
+                //     keyboardType: TextInputType.text,
+                //     decoration: InputDecoration(
+                //         prefixIcon: Icon(Icons.search_rounded),
+                //         enabledBorder: OutlineInputBorder(
+                //             borderSide: BorderSide(color: Colors.grey),
+                //             borderRadius:
+                //                 const BorderRadius.all(Radius.circular(16))),
+                //         focusedBorder: OutlineInputBorder(
+                //             borderSide:
+                //                 BorderSide(color: Colors.grey, width: 2),
+                //             borderRadius:
+                //                 BorderRadius.all(Radius.circular(16))),
+                //         contentPadding: EdgeInsets.only(left: 20),
+                //         hintText: "Cari nama",
+                //         hintStyle: TextStyle(
+                //             color: Colors.black45,
+                //             fontSize: 14,
+                //             fontFamily: 'Poppins'),
+                //         filled: true,
+                //         fillColor: Colors.white),
+                //     style: TextStyle(
+                //         color: Color(0xff3fa9a0),
+                //         fontFamily: 'Poppins',
+                //         fontSize: 16,
+                //         fontWeight: FontWeight.w400),
+                //     // maxLength: 40,
+                //     // validator: validateName,
+                //   ),
+                // ),
                 Container(
                     // color: Colors.redAccent,
                     margin: EdgeInsets.only(top: 10),
@@ -253,7 +284,9 @@ class _IbuHamilState extends State<IbuHamil> {
                               child: const Text('Tidak'),
                             ),
                             TextButton(
-                              onPressed: () => Navigator.pop(context, 'Ya'),
+                              onPressed: () {
+                                deleteDataIbuHamil(id);
+                              },
                               child: const Text('Ya'),
                             ),
                           ],

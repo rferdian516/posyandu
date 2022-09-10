@@ -249,12 +249,48 @@ class _DetailBalitaState extends State<DetailBalita> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Nama Orang Tua",
+                                "Nama Ibu Kandung",
                                 style: TextStyle(
                                     fontSize: 14, color: Color(0xff696969)),
                               ),
                               Text(
                                 dataBalita.motherName.toString(),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Nama Ayah Kandung",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataBalita.fatherName.toString(),
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Alamat",
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff696969)),
+                              ),
+                              Text(
+                                dataBalita.address.toString(),
                                 style: TextStyle(
                                     fontSize: 14, color: Color(0xff696969)),
                               )

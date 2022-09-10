@@ -149,7 +149,9 @@ class _InputBalitaState extends State<InputBalita> {
         "birth_place": selectedKotaDomisili,
         "birth_date": choseDate,
         "child_order": _anakKeController.text,
-        "mother_name": _ibuKandungController.text
+        "mother_name": _ibuKandungController.text,
+        "father_name": _ayahKandungController.text,
+        "address": _alamatController.text
       }).then((value) {
         Navigator.pop(context);
         print(value);

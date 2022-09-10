@@ -42,6 +42,8 @@ class _UpdateBalitaState extends State<UpdateBalita> {
   TextEditingController _tglLahirController = TextEditingController();
   TextEditingController _anakKeController = TextEditingController();
   TextEditingController _ibuKandungController = TextEditingController();
+  TextEditingController _ayahKandungController = TextEditingController();
+  TextEditingController _alamatController = TextEditingController();
 
   void getDateFromDialog() async {
     // final prefs = await _prefs;
@@ -140,6 +142,8 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                   .format(DateTime.parse(dataBalita.birthDate.toString()));
           _anakKeController.text = dataBalita.childOrder.toString();
           _ibuKandungController.text = dataBalita.motherName.toString();
+          _ayahKandungController.text = dataBalita.fatherName.toString();
+          _alamatController.text = dataBalita.address.toString();
         });
       } catch (e) {
         Fluttertoast.showToast(
@@ -446,6 +450,60 @@ class _UpdateBalitaState extends State<UpdateBalita> {
                       controller: _ibuKandungController,
                       keyboardType: TextInputType.text,
                       decoration: customTextField("Masukan nama ibu kandung"),
+                      // onChanged: (value) async {
+                      //   final prefs = await _prefs;
+                      //   prefs.setString("userName", value);
+                      // },
+                      style: TextStyle(
+                          color: Color(0xff3fa9a0),
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
+                      maxLength: 40,
+                      // validator: validateName,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Nama Ayah Kandung",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _ayahKandungController,
+                      keyboardType: TextInputType.text,
+                      decoration: customTextField("Masukan ayah kandung"),
+                      // onChanged: (value) async {
+                      //   final prefs = await _prefs;
+                      //   prefs.setString("userName", value);
+                      // },
+                      style: TextStyle(
+                          color: Color(0xff3fa9a0),
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400),
+                      maxLength: 40,
+                      // validator: validateName,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 16),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Alamat",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: _alamatController,
+                      keyboardType: TextInputType.text,
+                      decoration: customTextField("Masukan alamat lengkap"),
                       // onChanged: (value) async {
                       //   final prefs = await _prefs;
                       //   prefs.setString("userName", value);
