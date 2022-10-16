@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:posyandu/home/dashboard.dart';
 import 'package:posyandu/style/Custom.dart';
+import 'package:posyandu/utils/baseurl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:date_time_format/src/date_time_extension_methods.dart';
 
@@ -31,9 +32,9 @@ class _ExportState extends State<Export> {
   TextEditingController dataAkhirController = TextEditingController();
 
   void _downloadPdf(String idExport) async {
-    String url = "https://rumahrahileducation.com/api/posyandu?id=$idExport";
+    String myUrl = MyUrl().url;
+    String url = "$myUrl/baby-report-$idExport";
     if (!await launch(url)) throw 'Could not open $url';
-    print("https://rumahrahileducation.com/api/posyandu?id=$idExport");
   }
 
   void getDateFromDialog(String data) async {
